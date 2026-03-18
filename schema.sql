@@ -18,7 +18,3 @@ CREATE TABLE admin_accounts
 
 	password TEXT NOT NULL
 );
-
-/* Owner Account */
-/* INSERT INTO admin_accounts (username, password)
-VALUES () */
