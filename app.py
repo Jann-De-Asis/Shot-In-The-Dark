@@ -9,8 +9,6 @@ from forms import (RegisterForm, LoginForm)
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = "@£@£@234£%{Ya;234}:55~AWr]v]aw34tb"
-
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = "filesystem"
 Session(app)
