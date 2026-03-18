@@ -1,4 +1,4 @@
-From flask import (Flask, render_template, session, 
+from flask import (Flask, render_template, session, 
                    redirect, url_for, g, request)
 from flask_session import Session
 from database import get_db, close_db
