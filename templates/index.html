@@ -1,12 +1,16 @@
 {% extends "base.html" %}
 
+{% block javascript %}
+	<script type="module" src="{{ url_for('static', filename='js/base.js') }}"></script>
+{% endblock %}
+
 {% block main_content %}
 	<header>
 		<h1>Shot In The Dark</h1>
 	</header>
 	
 	<main>
-		<p><strong>Work In Progress!</strong><p>
+		<canvas width="1200px" height="750px"></canvas>
 	</main>
 	
 	<footer>

@@ -50,7 +50,7 @@ def getting_homepage():
 # ----------- Login Routes --------------- #
 @app.route("/register", methods=["GET", "POST"])
 def registering():
-    form = registrationForm()
+    form = RegisterForm()
 
     if request.method == 'POST':
         pass
@@ -58,7 +58,7 @@ def registering():
 
 @app.route("/login", methods=["GET", "POST"])
 def login_in():
-    form = loginForm()
+    form = LoginForm()
 
     if request.method == 'POST':
         pass

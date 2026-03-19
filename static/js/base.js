@@ -7,11 +7,14 @@ let then = Date.now();
 
 let player = {
 	x : 0,
-	y : 150,
-	size : 10,
+	y : 0,
+	width : 50,
+	height : 80,
 	xChange : 10,
 	yChange : 10
-};
+}
+
+let click = false;
 
 let moveLeft = false;
 let moveUp = false;
@@ -27,6 +30,11 @@ function init() {
 
 	window.addEventListener("keydown", activate, false);
 	window.addEventListener("keyup", deactivate, false);
+	window.addEventListener("click", activate, false)
+
+	// Starting Player Position
+	player.x = canvas.width / 2 - player.width / 2;
+	player.y = canvas.height / 2 - player.height / 2;
 
 	draw();
 }
@@ -47,7 +55,7 @@ function draw() {
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
 	context.fillStyle = "cyan";
-	context.fillRect(player.x, player.y, player.size, player.size);
+	context.fillRect(player.x, player.y, player.width, player.height);
 
 	if (moveRight) {
 		player.x = player.x + player.xChange;
@@ -66,6 +74,7 @@ function draw() {
 
 function activate(event) {
 	let key = event.key;
+	let click = event.click;
 
 	if (key === "ArrowLeft" ||
 	    key === "ArrowRight" ||
@@ -73,6 +82,7 @@ function activate(event) {
 	    key === "ArrowDown") {
 
 	    event.preventDefault();
+
 	}
 
 	if (key === "ArrowLeft") {
@@ -83,6 +93,10 @@ function activate(event) {
 		moveRight = true;
 	} else if (key === "ArrowDown") {
 		moveDown = true;
+	}
+
+	if (click) {
+
 	}
 }
 

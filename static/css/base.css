@@ -6,8 +6,6 @@ body {
 canvas {
 	display: block;
 	
-	width: 1200px;
-	height: 750px;
 	margin: 0 auto;	
 
 	background-color: black;
