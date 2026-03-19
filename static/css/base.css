@@ -1,0 +1,19 @@
+body {
+	margin: 0 auto;
+	text-align: center;
+}
+
+canvas {
+	display: block;
+	
+	width: 1200px;
+	height: 750px;
+	margin: 0 auto;	
+
+	background-color: black;
+}
+
+header > h1 {
+	color: white;
+	background-color: black;
+}
