@@ -1,6 +1,7 @@
 let canvas;
 let context;
 
+// Framerate 
 let fpsInterval = 1000 / 30;
 let now;
 let then = Date.now();
@@ -14,8 +15,11 @@ let player = {
 	yChange : 10
 }
 
-let click = false;
+// Click co-ordinates
+let clickX;
+let clickY;
 
+// Movement's Initial Condition
 let moveLeft = false;
 let moveUp = false;
 let moveRight = false;
@@ -30,7 +34,7 @@ function init() {
 
 	window.addEventListener("keydown", activate, false);
 	window.addEventListener("keyup", deactivate, false);
-	window.addEventListener("click", activate, false)
+	canvas.addEventListener("mousedown", getMousePosition, false)
 
 	// Starting Player Position
 	player.x = canvas.width / 2 - player.width / 2;
@@ -54,6 +58,10 @@ function draw() {
 
 	context.clearRect(0, 0, canvas.width, canvas.height);
 
+	// Test Dot
+	context.fillStyle = "Red"
+	context.fillRect(5, 5, 5, 5)
+
 	context.fillStyle = "cyan";
 	context.fillRect(player.x, player.y, player.width, player.height);
 
@@ -74,7 +82,6 @@ function draw() {
 
 function activate(event) {
 	let key = event.key;
-	let click = event.click;
 
 	if (key === "ArrowLeft" ||
 	    key === "ArrowRight" ||
@@ -94,10 +101,6 @@ function activate(event) {
 	} else if (key === "ArrowDown") {
 		moveDown = true;
 	}
-
-	if (click) {
-
-	}
 }
 
 
@@ -115,6 +118,17 @@ function deactivate(event) {
 	}
 }
 
+
+// Calculating The User's Click Position Relative To The Canvas
+// Reference Link: (https://www.geeksforgeeks.org/javascript/how-to-get-the-coordinates-of-a-mouse-click-on-a-canvas-element/)
+function getMousePosition(event) {
+	let rect = canvas.getBoundingClientRect();
+        clickX = event.clientX - rect.left;
+        clickY = event.clientY - rect.top;	
+
+	console.log("Click's X co-ordinate" + clickX, 
+		    "Click's Y co-ordinate" + clickY )
+}
 
 function randint(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
