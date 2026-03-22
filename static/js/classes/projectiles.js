@@ -10,13 +10,13 @@ export class PlayersProjectile {
 			this.velocity = velocity
 		}
 
-		draw(context) {
-			context.fillStyle = this.colour
-			context.fillRect(this.x, this.y, this.size, this.size)
+		draw(ctx) {
+			ctx.fillStyle = this.colour
+			ctx.fillRect(this.x, this.y, this.size, this.size)
 		}
 
-		project(context) {
-			this.draw(context)
+		project(ctx) {
+			this.draw(ctx)
 			this.x += this.velocity.x
 			this.y += this.velocity.y
 		}
