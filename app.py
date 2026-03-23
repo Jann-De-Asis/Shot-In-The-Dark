@@ -5,8 +5,6 @@ from database import get_db, close_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
-# You may not need 'forms.py' anymore since everything 
-# can be done using JavaScript; remove later.
 from forms import (RegisterForm, LoginForm)
 
 
