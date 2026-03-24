@@ -5,8 +5,6 @@ from database import get_db, close_db
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 
-from forms import (RegisterForm, LoginForm)
-
 
 app = Flask(__name__)
 
@@ -51,16 +49,12 @@ def getting_homepage():
 # ----------- Login Routes --------------- #
 @app.route("/register", methods=["GET", "POST"])
 def registering():
-    form = RegisterForm()
-
     if request.method == 'POST':
         pass
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login_in():
-    form = LoginForm()
-
     if request.method == 'POST':
         pass
 

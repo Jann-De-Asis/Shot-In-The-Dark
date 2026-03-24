@@ -4,6 +4,7 @@ Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 Timestamp: 2:36 
 */
 import {PlayersProjectile} from "./classes/projectiles.js";
+import {inGameButton} from "./classes/userInterface.js";
 
 let canvas;
 let ctx;
@@ -16,14 +17,11 @@ let then = Date.now();
 let ratio = window.devicePixelRatio;
 
 let onScreenProjectiles = []; 
+let inGameButtons = [];
 
 // Mouse co-ordinates
 let clickPos;
 let mousePos;
-
-// Buttons
-let fullScreenButton;
-
 
 document.addEventListener("DOMContentLoaded", init, false);
 
@@ -34,18 +32,34 @@ function init() {
 
 	window.addEventListener("keydown", activate, false);
 	window.addEventListener("keyup", deactivate, false);
-	canvas.addEventListener("mousedown", onClick, false)
+	canvas.addEventListener("mousedown", onClick, false);
 
-	document.addEventListener("fullscreenchange", fullscreenHandler, false)
+	document.addEventListener("fullscreenchange", exitFullscreen, false);
 
-	canvas.addEventListener("mousemove", getMousePosition, false)
+	canvas.addEventListener("mousemove", getMousePosition, false);
+
+	inGameButtons.push(
+		new inGameButton({
+			type : "fullscreenButton",
+			x : {
+				canvasWidth : canvas.width,
+				difference : 20
+			}, 
+			y : {
+				canvasHeight : 0,
+				difference : 10
+			},  
+			size : 10, 
+			colour : "gray",
+		})
+	);
 
 	// Starting Player Position
 	player.x = canvas.width / 2 - player.width / 2;
 	player.y = canvas.height / 2 - player.height / 2;
 
 	draw();
-}
+};
 
 
 function draw() {
@@ -57,7 +71,7 @@ function draw() {
 	let elapsed = now - then;
 	if (elapsed <= fpsInterval) {
 		return;
-	}
+	};
 	then = now - (elapsed % fpsInterval);
 
 	// Clearing the canvas every frame to give
@@ -68,53 +82,51 @@ function draw() {
 	// in size in fullscreen mode.
 	if (scale) {
 		scalingCanvas(window.innerWidth, window.innerHeight);
-	}
+	} else {
+		scalingCanvas(600, 400);
+	};
 
 	ctx.fillStyle = "red";
 	ctx.fillRect(player.x, player.y, player.width, player.height);
 
 	if (moveRight) {
 		player.x += player.xChange;
-	}
+	};
 	if (moveUp) {
 		player.y -= player.yChange;
-	}	
+	};
 	if (moveDown) {
 		player.y += player.yChange;
-	}	
+	};
 	if (moveLeft) {
 		player.x -= player.xChange;
-	}
+	};
 
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
 	for (let i = (onScreenProjectiles.length - 1); i >= 0; i--) {
-		let projectile = onScreenProjectiles[i]
-		projectile.project(ctx)
-	}
-
-	ctx.fillStyle = "orange";
-	ctx.fillRect(200, 200, 10, 10);
-
-
-	// Animating Buttons	
-	fullScreenButton = {
-		x : canvas.width - 20,
-		y : 10,
-		size : 10 
+		let projectile = onScreenProjectiles[i];
+		projectile.project(ctx);
 	};
 
 
-	if (isInside(mousePos, fullScreenButton)) {
-		ctx.fillStyle = "brown";
-	} else { 
-		ctx.fillStyle = "gray";
-	}
+	for (let button of inGameButtons) {	
+		button.x.canvasWidth = canvas.width;
 
-	ctx.fillRect(fullScreenButton.x, fullScreenButton.y, fullScreenButton.size, fullScreenButton.size)
+		ctx.fillStyle = button.colour;
+		ctx.fillRect(
+			button.x.canvasWidth - button.x.difference, 
+			button.y.difference - button.y.canvasHeight, 
+			button.size, 
+			button.size
+		);
+	};
 
-}
+	// Reference Dot
+	ctx.fillStyle = "orange";
+	ctx.fillRect(200, 200, 10, 10);
 
+};
 
 // SINGLEPLAYER
 
@@ -125,9 +137,10 @@ let player = {
 	height : 25,
 	xChange : 5,
 	yChange : 5
-}
+};
 
 let shiftSprint = false;
+// Multiplied
 let sprintSpeed = 2;
 
 let moveLeft = false;
@@ -144,7 +157,7 @@ function activate(event) {
 
 		player.xChange = player.xChange * sprintSpeed;
 		player.yChange = player.yChange * sprintSpeed;
-	}
+	};
 	
 	if (key === "a") {
 		moveLeft = true;
@@ -154,8 +167,8 @@ function activate(event) {
 		moveRight = true;
 	} else if (key === "s") {
 		moveDown = true;
-	}
-}
+	};
+};
 
 
 function deactivate(event) {
@@ -166,7 +179,7 @@ function deactivate(event) {
 		
 		player.xChange = player.xChange / sprintSpeed;
 		player.yChange = player.yChange / sprintSpeed;
-	}
+	};
 	
 	
 	if (key === "a") {
@@ -177,8 +190,8 @@ function deactivate(event) {
 		moveRight = false;
 	} else if (key === "s") {
 		moveDown = false;
-	} 
-}
+	};
+};
 
 
 function onClick(event) {
@@ -188,7 +201,7 @@ function onClick(event) {
 	*/
 	let rect = canvas.getBoundingClientRect();
         clickPos = {
-		x : event.clientX - rect.left,
+			x : event.clientX - rect.left,
           	y : event.clientY - rect.top
 	};
 
@@ -208,7 +221,7 @@ function onClick(event) {
 		const velocity = {
 			x: Math.cos(angle) * 50,
 			y: Math.sin(angle) * 50
-		}
+		};
 
 		onScreenProjectiles.push(
 			new PlayersProjectile({
@@ -219,30 +232,31 @@ function onClick(event) {
 				velocity
 				})
 			);
-	}
+	};
 
-	if (isInside(clickPos, fullScreenButton)) {
-		if (document.fullscreenElement === null) {
-			canvas.requestFullscreen();		
-			scale = true;
-		
-		} else {
-			document.exitFullscreen();
-			scalingCanvas(600, 400);
-			scale = false;
-		}		
-	}	
-}
+	
+	for (let button of inGameButtons) {
+		if (button.type === "fullscreenButton") {
+			if (button.isInside(clickPos, button)) {
+				scale = button.toggleFullscreen(canvas);
+			};
+		};
+	};
+};
 
 
 // USER INTERFACE
 
 let scale = false;
 
-function isInside(pos, box) {
-	return (pos.x > box.x) && (pos.x < (box.x + box.size)) && (pos.y < (box.y + box.size)) && (pos.y > box.y)
-}
+function exitFullscreen() {
+	if (document.fullscreenElement === null) {
+		scale = false;
+	};
+};
 
+
+// MISCELLANEOUS
 
 /*
 Scaling the canvas based on new sizes while adapting for high-DPI displays.
@@ -256,31 +270,26 @@ function scalingCanvas(width, height) {
 	canvas.getContext("2d").scale(ratio, ratio);
 
 	return canvas;
-}
+};	
 
-
-// Handles other methods of exiting fullscreen
-function fullscreenHandler(event) {
-	if (document.fullscreenElement === null) {
-		scalingCanvas(600, 400);
-		scale = false;
-	}
-
-}
-
-
-// MISCELLANEOUS
 
 function getMousePosition(event) {
-	let rect = canvas.getBoundingClientRect();
+		let rect = canvas.getBoundingClientRect();
         mousePos = {
-		x : event.clientX - rect.left,
+			x : event.clientX - rect.left,
           	y : event.clientY - rect.top
-	};
+		};
 
-}
+		for (let button of inGameButtons) {
+			if (button.isInside(mousePos, button)) {
+				button.colour = "brown";
+			} else {
+				button.colour = "gray";
+			};
+		};
+};
 
 
 function randint(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
