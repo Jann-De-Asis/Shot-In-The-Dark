@@ -3,27 +3,15 @@ JavaScript's ES6 Modules for import and export was learned here:
 Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 Timestamp: 2:36 
 */
-import {PlayersProjectile} from "./classes/projectiles.js";
-import {inGameButton} from "./classes/userInterface.js";
+import {Projectile} from "./classes/projectiles.js";
+import {Button} from "./classes/userInterface.js";
+import {Entity} from  "./classes/entities.js";
+
+
+document.addEventListener("DOMContentLoaded", init, false);
 
 let canvas;
 let ctx;
-
-// Framerate 
-let fpsInterval = 1000 / 30;
-let now;
-let then = Date.now();
-
-let ratio = window.devicePixelRatio;
-
-let onScreenProjectiles = []; 
-let inGameButtons = [];
-
-// Mouse co-ordinates
-let clickPos;
-let mousePos;
-
-document.addEventListener("DOMContentLoaded", init, false);
 
 
 function init() {
@@ -32,14 +20,17 @@ function init() {
 
 	window.addEventListener("keydown", activate, false);
 	window.addEventListener("keyup", deactivate, false);
+
 	canvas.addEventListener("mousedown", onClick, false);
+	canvas.addEventListener("mousemove", getMousePosition, false);
 
 	document.addEventListener("fullscreenchange", exitFullscreen, false);
 
-	canvas.addEventListener("mousemove", getMousePosition, false);
+	// (Make a some sort of place to run all the 
+	// class objects rather than stuffing it all here.)
 
 	inGameButtons.push(
-		new inGameButton({
+		new Button({
 			type : "fullscreenButton",
 			x : {
 				canvasWidth : canvas.width,
@@ -49,18 +40,41 @@ function init() {
 				canvasHeight : 0,
 				difference : 10
 			},  
-			size : 10, 
+			width : 10, 
+			height : 10, 
 			colour : "gray",
 		})
 	);
 
-	// Starting Player Position
-	player.x = canvas.width / 2 - player.width / 2;
-	player.y = canvas.height / 2 - player.height / 2;
-
+	entities.push (
+		new Entity({
+			type : "player",
+			x : canvas.width / 2,
+			y : canvas.height / 2,
+			width : 15,
+			height : 25,
+			colour : "red",
+			velocity : {
+				x : 5,
+				y : 5
+			}
+		})
+	);
+		
 	draw();
 };
 
+
+// Framerate 
+const fpsInterval = 1000 / 30;
+let then = Date.now();
+
+let onScreenProjectiles = []; 
+let inGameButtons = [];
+let entities = [];
+
+let playerX;
+let playerY;
 
 function draw() {
 	window.requestAnimationFrame(draw);
@@ -79,31 +93,28 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 	// Constantly updating the scale to account for changes
-	// in size in fullscreen mode.
+	// in size for fullscreen mode.
 	if (scale) {
 		scalingCanvas(window.innerWidth, window.innerHeight);
 	} else {
 		scalingCanvas(600, 400);
 	};
 
-	ctx.fillStyle = "red";
-	ctx.fillRect(player.x, player.y, player.width, player.height);
-
-	if (moveRight) {
-		player.x += player.xChange;
-	};
-	if (moveUp) {
-		player.y -= player.yChange;
-	};
-	if (moveDown) {
-		player.y += player.yChange;
-	};
-	if (moveLeft) {
-		player.x -= player.xChange;
-	};
-
+	
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
+	for (let i = (entities.length - 1); i >= 0; i--) {
+		let entity = entities[i];
+
+		entity.draw(ctx);
+		
+		if (entity.type === "player") {
+			playerX = entity.x
+			playerY = entity.y
+		};
+
+	};
+
 	for (let i = (onScreenProjectiles.length - 1); i >= 0; i--) {
 		let projectile = onScreenProjectiles[i];
 		projectile.project(ctx);
@@ -117,8 +128,8 @@ function draw() {
 		ctx.fillRect(
 			button.x.canvasWidth - button.x.difference, 
 			button.y.difference - button.y.canvasHeight, 
-			button.size, 
-			button.size
+			button.width, 
+			button.height
 		);
 	};
 
@@ -128,70 +139,56 @@ function draw() {
 
 };
 
-// SINGLEPLAYER
-
-let player = {
-	x : 0,
-	y : 0,
-	width : 15,
-	height : 25,
-	xChange : 5,
-	yChange : 5
-};
-
-let shiftSprint = false;
-// Multiplied
-let sprintSpeed = 2;
-
-let moveLeft = false;
-let moveUp = false;
-let moveRight = false;
-let moveDown = false;
-
 
 function activate(event) {
 	let key = event.key.toLowerCase();
-
-	if (key === "shift") {
-		shiftSprint = true;
-
-		player.xChange = player.xChange * sprintSpeed;
-		player.yChange = player.yChange * sprintSpeed;
-	};
-	
-	if (key === "a") {
-		moveLeft = true;
-	} else if (key === "w") {
-		moveUp = true;
-	} else if (key === "d") {
-		moveRight = true;
-	} else if (key === "s") {
-		moveDown = true;
+		
+	for (let entity of entities) {
+		if (entity.type === "player") {
+			if (key === "shift") {	
+				entity.velocity.x = entity.velocity.x * entity.sprintIncrease;
+				entity.velocity.y = entity.velocity.y * entity.sprintIncrease;
+			};
+		
+			if (key === "w") {
+				entity.moveUp = true;
+			} else if (key === "a") {
+				entity.moveLeft = true;
+			} else if (key === "s") {
+				entity.moveDown = true;
+			} else if (key === "d") {
+				entity.moveRight = true;
+			};	
+		};
 	};
 };
 
 
 function deactivate(event) {
-	let key = event.key.toLowerCase();
+	let key = event.key.toLowerCase();	
+	
+	for (let entity of entities) {
+		if (entity.type === "player") {
+			if (key === "shift") {
+				entity.velocity.x = entity.velocity.x / entity.sprintIncrease;
+				entity.velocity.y = entity.velocity.y / entity.sprintIncrease;
+			};
 
-	if (key === "shift") {
-		shiftSprint = false;
-		
-		player.xChange = player.xChange / sprintSpeed;
-		player.yChange = player.yChange / sprintSpeed;
-	};
-	
-	
-	if (key === "a") {
-		moveLeft = false;
-	} else if (key === "w") {
-		moveUp = false;
-	} else if (key === "d") {
-		moveRight = false;
-	} else if (key === "s") {
-		moveDown = false;
+			if (key === "w") {
+				entity.moveUp = false;
+			} else if (key === "a") {
+				entity.moveLeft = false;
+			} else if (key === "s") {
+				entity.moveDown = false;
+			} else if (key === "d") {
+				entity.moveRight = false;
+			};
+		};
 	};
 };
+
+
+let clickPos;
 
 
 function onClick(event) {
@@ -201,33 +198,37 @@ function onClick(event) {
 	*/
 	let rect = canvas.getBoundingClientRect();
         clickPos = {
-			x : event.clientX - rect.left,
+		x : event.clientX - rect.left,
           	y : event.clientY - rect.top
 	};
 
 	// Left-mouse button
 	if (event.button === 0) {
+		
 		/* 
 		Finding the angle and velocity inverse and basic trigonometry.
 		Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
 		Reference Link: (https://youtu.be/HXquxWtE5vA?si=n6eukRFpBSWR7r9_&t=8459)
 		Timestamp: 2:20:59 
 		*/
+		
 		const angle = Math.atan2(
-			clickPos.y - player.y, 
-			clickPos.x - player.x
+			clickPos.y - playerY, 
+			clickPos.x - playerX
 			);
 		
 		const velocity = {
-			x: Math.cos(angle) * 50,
-			y: Math.sin(angle) * 50
+			x : Math.cos(angle) * 50,
+			y : Math.sin(angle) * 50
 		};
 
 		onScreenProjectiles.push(
-			new PlayersProjectile({
-				x : player.x, 
-				y : player.y,
-				size : 10,
+			new Projectile({
+				type : "playersProjectile",
+				x : playerX, 
+				y : playerY,
+				width : 10,
+				height : 10,
 				colour : "yellow",
 				velocity
 				})
@@ -247,7 +248,6 @@ function onClick(event) {
 
 // USER INTERFACE
 
-let scale = false;
 
 function exitFullscreen() {
 	if (document.fullscreenElement === null) {
@@ -256,28 +256,14 @@ function exitFullscreen() {
 };
 
 
-// MISCELLANEOUS
-
-/*
-Scaling the canvas based on new sizes while adapting for high-DPI displays.
-Reference Link (https://www.xjavascript.com/blog/how-do-i-fix-blurry-text-in-my-html5-canvas/)
-Section 2.2 in Table of Contents
-*/
-function scalingCanvas(width, height) {
-
-	canvas.width = width * ratio;
-	canvas.height = height * ratio;
-	canvas.getContext("2d").scale(ratio, ratio);
-
-	return canvas;
-};	
+let mousePos;
 
 
 function getMousePosition(event) {
 		let rect = canvas.getBoundingClientRect();
-        mousePos = {
+	        mousePos = {
 			x : event.clientX - rect.left,
-          	y : event.clientY - rect.top
+        	  	y : event.clientY - rect.top
 		};
 
 		for (let button of inGameButtons) {
@@ -288,6 +274,26 @@ function getMousePosition(event) {
 			};
 		};
 };
+
+// MISCELLANEOUS
+
+/*
+Scaling the canvas based on new sizes while adapting for high-DPI displays.
+Reference Link (https://www.xjavascript.com/blog/how-do-i-fix-blurry-text-in-my-html5-canvas/)
+Section 2.2 in Table of Contents
+*/
+
+let ratio = window.devicePixelRatio;
+let scale = false;
+
+function scalingCanvas(width, height) {
+
+	canvas.width = width * ratio;
+	canvas.height = height * ratio;
+	canvas.getContext("2d").scale(ratio, ratio);
+
+	return canvas;
+};	
 
 
 function randint(min, max) {
