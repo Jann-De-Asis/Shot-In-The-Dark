@@ -1,5 +1,5 @@
 export class Entity {
-	constructor({type, x, y, width, height, colour, velocity}) {
+	constructor({type, x, y, width, height, colour, velocity, ammunition, equip}) {
 		this.type = type;
 		this.x = x;
 		this.y = y;
@@ -7,6 +7,8 @@ export class Entity {
 		this.height = height;
 		this.colour = colour;
 		this.velocity = velocity;
+		this.ammunition = ammunition;
+		this.equip = equip;
 	
 		this.moveUp = false;
 		this.moveLeft = false;
@@ -33,7 +35,7 @@ export class Entity {
 		};
 	
 		if (this.moveRight) {
-                	this.x += this.velocity.x;
+        	this.x += this.velocity.x;
 		};
 	};
 }; 

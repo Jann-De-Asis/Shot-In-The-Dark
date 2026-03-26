@@ -4,8 +4,9 @@ Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 Timestamp: 2:36 
 */
 import {Projectile} from "./classes/projectiles.js";
-import {Button} from "./classes/userInterface.js";
+import {Bar, Button} from "./classes/userInterface.js";
 import {Entity} from  "./classes/entities.js";
+import {Firearm} from  "./classes/items.js";
 
 
 document.addEventListener("DOMContentLoaded", init, false);
@@ -13,6 +14,27 @@ document.addEventListener("DOMContentLoaded", init, false);
 let canvas;
 let ctx;
 
+// Pre-define objects that will never be changed.
+
+/*
+let player = new Entity({
+			type : "player",
+			x : canvas.width / 2,
+			y : canvas.height / 2,
+			width : 15,
+			height : 25,
+			colour : "red",
+			velocity : {
+				x : 5,
+				y : 5
+			},
+			ammunition : 3,
+			equip : new Firearm({
+				type : "glock19",
+				magazineType : "9mm"
+			})
+});
+*/
 
 function init() {
 	canvas = document.querySelector("canvas");
@@ -31,7 +53,7 @@ function init() {
 
 	inGameButtons.push(
 		new Button({
-			type : "fullscreenButton",
+			type : "fullscreenplayerButton",
 			x : {
 				canvasWidth : canvas.width,
 				difference : 20
@@ -46,18 +68,25 @@ function init() {
 		})
 	);
 
-	entities.push (
-		new Entity({
-			type : "player",
-			x : canvas.width / 2,
-			y : canvas.height / 2,
-			width : 15,
-			height : 25,
-			colour : "red",
-			velocity : {
-				x : 5,
-				y : 5
-			}
+	// entities.push (
+	// 	player
+	// );
+
+	onScreenBars.push (
+		new Bar({
+			type : "playersRounds",
+			x : {
+				canvasWidth : 0,
+				difference : 10
+			}, 
+			y : {
+				canvasHeight : canvas.height,
+				difference : 20
+			},  
+			width : 300,
+			height : 15,
+			colour : "yellow",
+
 		})
 	);
 		
@@ -69,7 +98,13 @@ function init() {
 const fpsInterval = 1000 / 30;
 let then = Date.now();
 
-let onScreenProjectiles = []; 
+
+// Change the lists into dictionaries and have the objects in that list. 
+// Pre-define that list since nothing new is ever going to change.
+let onScreenBars = [];
+let onScreenProjectiles = {
+	playerProjectiles : []
+}; 
 let inGameButtons = [];
 let entities = [];
 
@@ -133,10 +168,18 @@ function draw() {
 		);
 	};
 
+	for (let i = (onScreenBars.length - 1); i >= 0; i--) {
+		let bar = onScreenBars[i];
+		bar.y.canvasHeight = canvas.height
+
+		bar.draw(ctx);
+	};
+
 	// Reference Dot
 	ctx.fillStyle = "orange";
 	ctx.fillRect(200, 200, 10, 10);
 
+	console.log(onScreenProjectiles);
 };
 
 
@@ -198,7 +241,7 @@ function onClick(event) {
 	*/
 	let rect = canvas.getBoundingClientRect();
         clickPos = {
-		x : event.clientX - rect.left,
+			x : event.clientX - rect.left,
           	y : event.clientY - rect.top
 	};
 
@@ -215,24 +258,25 @@ function onClick(event) {
 		const angle = Math.atan2(
 			clickPos.y - playerY, 
 			clickPos.x - playerX
-			);
+		);
 		
 		const velocity = {
 			x : Math.cos(angle) * 50,
 			y : Math.sin(angle) * 50
 		};
 
-		onScreenProjectiles.push(
-			new Projectile({
-				type : "playersProjectile",
-				x : playerX, 
-				y : playerY,
-				width : 10,
-				height : 10,
-				colour : "yellow",
-				velocity
-				})
-			);
+
+
+		onScreenProjectiles.playerProjectiles.push(
+					new Projectile({
+						type : "playersProjectile",
+						x : playerX, 
+						y : playerY,
+						width : 10,
+						height : 10,
+						colour : "yellow",
+						velocity
+					}));	
 	};
 
 	
@@ -263,7 +307,7 @@ function getMousePosition(event) {
 		let rect = canvas.getBoundingClientRect();
 	        mousePos = {
 			x : event.clientX - rect.left,
-        	  	y : event.clientY - rect.top
+        	y : event.clientY - rect.top
 		};
 
 		for (let button of inGameButtons) {

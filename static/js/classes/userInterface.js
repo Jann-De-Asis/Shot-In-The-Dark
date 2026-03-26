@@ -25,3 +25,24 @@ export class Button {
 		};	
 	};	
 };
+
+
+export class Bar {
+	constructor({type, x, y, width, height, colour}) {
+		this.type = type;
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.colour = colour;
+	};
+
+	draw(ctx) {
+		ctx.fillStyle = this.colour;
+		ctx.fillRect(
+			this.x.difference + this.x.canvasWidth, 
+			this.y.canvasHeight - this.y.difference, 
+			this.width, 
+			this.height);
+	};
+};
