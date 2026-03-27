@@ -14,27 +14,6 @@ document.addEventListener("DOMContentLoaded", init, false);
 let canvas;
 let ctx;
 
-// Pre-define objects that will never be changed.
-
-/*
-let player = new Entity({
-			type : "player",
-			x : canvas.width / 2,
-			y : canvas.height / 2,
-			width : 15,
-			height : 25,
-			colour : "red",
-			velocity : {
-				x : 5,
-				y : 5
-			},
-			ammunition : 3,
-			equip : new Firearm({
-				type : "glock19",
-				magazineType : "9mm"
-			})
-});
-*/
 
 function init() {
 	canvas = document.querySelector("canvas");
@@ -50,31 +29,45 @@ function init() {
 
 	// (Make a some sort of place to run all the 
 	// class objects rather than stuffing it all here.)
-
-	inGameButtons.push(
-		new Button({
-			type : "fullscreenplayerButton",
-			x : {
-				canvasWidth : canvas.width,
-				difference : 20
-			}, 
-			y : {
-				canvasHeight : 0,
-				difference : 10
-			},  
-			width : 10, 
-			height : 10, 
-			colour : "gray",
+	
+	entities.push(
+		player = new Entity({
+			x : canvas.width / 2,
+			y : canvas.height / 2,
+			width : 15,
+			height : 25,
+			colour : "red",
+			velocity : {
+				x : 5,
+				y : 5
+			},
+			ammunition : 3,
+			equip : new Firearm({
+				type : "glock19",
+				magazineType : "9mm"
+			})
 		})
+
 	);
 
-	// entities.push (
-	// 	player
-	// );
+	buttons.push(
+		fullscreenButton = new Button({
+					x : {
+						canvasWidth : canvas.width,
+						difference : 20
+					}, 
+					y : {
+						canvasHeight : 0,
+						difference : 10
+					},  
+					width : 10, 
+					height : 10, 
+					colour : "gray",
+					})
+	);
 
-	onScreenBars.push (
+	bars.push (
 		new Bar({
-			type : "playersRounds",
 			x : {
 				canvasWidth : 0,
 				difference : 10
@@ -90,7 +83,7 @@ function init() {
 		})
 	);
 		
-	draw();
+	animate();
 };
 
 
@@ -101,18 +94,21 @@ let then = Date.now();
 
 // Change the lists into dictionaries and have the objects in that list. 
 // Pre-define that list since nothing new is ever going to change.
-let onScreenBars = [];
-let onScreenProjectiles = {
-	playerProjectiles : []
-}; 
-let inGameButtons = [];
+let bars = []; 
+let buttons = [];
 let entities = [];
 
-let playerX;
-let playerY;
+let projectiles = {
+	playerProjectiles : [],
+	enemyProjectiles : []
+};
 
-function draw() {
-	window.requestAnimationFrame(draw);
+// All unique objects.
+let player; 
+let fullscreenButton;
+
+function animate() {
+	window.requestAnimationFrame(animate);
 	
 	// Manages the frames per second (fps) 
 	// through the denominator of 'fpsInterval'.
@@ -139,94 +135,65 @@ function draw() {
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
 	for (let i = (entities.length - 1); i >= 0; i--) {
-		let entity = entities[i];
+		entities[i].draw(ctx);
+	};
 
-		entity.draw(ctx);
-		
-		if (entity.type === "player") {
-			playerX = entity.x
-			playerY = entity.y
+	for (let projectileType in projectiles) {
+		for (let i = (projectiles[projectileType].length - 1); i >= 0; i--) {
+			projectiles[projectileType][i].project(ctx);
 		};
-
+	};
+	
+	for (let button of buttons) {
+		button.draw(ctx, canvas.width, canvas.height)
 	};
 
-	for (let i = (onScreenProjectiles.length - 1); i >= 0; i--) {
-		let projectile = onScreenProjectiles[i];
-		projectile.project(ctx);
-	};
-
-
-	for (let button of inGameButtons) {	
-		button.x.canvasWidth = canvas.width;
-
-		ctx.fillStyle = button.colour;
-		ctx.fillRect(
-			button.x.canvasWidth - button.x.difference, 
-			button.y.difference - button.y.canvasHeight, 
-			button.width, 
-			button.height
-		);
-	};
-
-	for (let i = (onScreenBars.length - 1); i >= 0; i--) {
-		let bar = onScreenBars[i];
-		bar.y.canvasHeight = canvas.height
-
-		bar.draw(ctx);
+	for (let bar of bars) {
+		bar.draw(ctx, canvas.width, canvas.height);
 	};
 
 	// Reference Dot
 	ctx.fillStyle = "orange";
 	ctx.fillRect(200, 200, 10, 10);
-
-	console.log(onScreenProjectiles);
 };
 
 
 function activate(event) {
 	let key = event.key.toLowerCase();
 		
-	for (let entity of entities) {
-		if (entity.type === "player") {
-			if (key === "shift") {	
-				entity.velocity.x = entity.velocity.x * entity.sprintIncrease;
-				entity.velocity.y = entity.velocity.y * entity.sprintIncrease;
-			};
-		
-			if (key === "w") {
-				entity.moveUp = true;
-			} else if (key === "a") {
-				entity.moveLeft = true;
-			} else if (key === "s") {
-				entity.moveDown = true;
-			} else if (key === "d") {
-				entity.moveRight = true;
-			};	
-		};
+	if (key === "shift") {	
+		player.velocity.x = player.velocity.x * player.sprintIncrease;
+		player.velocity.y = player.velocity.y * player.sprintIncrease;
 	};
+
+	if (key === "w") {
+		player.moveUp = true;
+	} else if (key === "a") {
+		player.moveLeft = true;
+	} else if (key === "s") {
+		player.moveDown = true;
+	} else if (key === "d") {
+		player.moveRight = true;
+	};	
 };
 
 
 function deactivate(event) {
 	let key = event.key.toLowerCase();	
 	
-	for (let entity of entities) {
-		if (entity.type === "player") {
-			if (key === "shift") {
-				entity.velocity.x = entity.velocity.x / entity.sprintIncrease;
-				entity.velocity.y = entity.velocity.y / entity.sprintIncrease;
-			};
+	if (key === "shift") {
+		player.velocity.x = player.velocity.x / player.sprintIncrease;
+		player.velocity.y = player.velocity.y / player.sprintIncrease;
+	};
 
-			if (key === "w") {
-				entity.moveUp = false;
-			} else if (key === "a") {
-				entity.moveLeft = false;
-			} else if (key === "s") {
-				entity.moveDown = false;
-			} else if (key === "d") {
-				entity.moveRight = false;
-			};
-		};
+	if (key === "w") {
+		player.moveUp = false;
+	} else if (key === "a") {
+		player.moveLeft = false;
+	} else if (key === "s") {
+		player.moveDown = false;
+	} else if (key === "d") {
+		player.moveRight = false;
 	};
 };
 
@@ -241,7 +208,7 @@ function onClick(event) {
 	*/
 	let rect = canvas.getBoundingClientRect();
         clickPos = {
-			x : event.clientX - rect.left,
+		x : event.clientX - rect.left,
           	y : event.clientY - rect.top
 	};
 
@@ -254,12 +221,11 @@ function onClick(event) {
 		Reference Link: (https://youtu.be/HXquxWtE5vA?si=n6eukRFpBSWR7r9_&t=8459)
 		Timestamp: 2:20:59 
 		*/
-		
 		const angle = Math.atan2(
-			clickPos.y - playerY, 
-			clickPos.x - playerX
+			clickPos.y - player.y, 
+			clickPos.x - player.x
 		);
-		
+
 		const velocity = {
 			x : Math.cos(angle) * 50,
 			y : Math.sin(angle) * 50
@@ -267,11 +233,10 @@ function onClick(event) {
 
 
 
-		onScreenProjectiles.playerProjectiles.push(
+		projectiles.playerProjectiles.push(
 					new Projectile({
-						type : "playersProjectile",
-						x : playerX, 
-						y : playerY,
+						x : player.x, 
+						y : player.y,
 						width : 10,
 						height : 10,
 						colour : "yellow",
@@ -280,12 +245,10 @@ function onClick(event) {
 	};
 
 	
-	for (let button of inGameButtons) {
-		if (button.type === "fullscreenButton") {
-			if (button.isInside(clickPos, button)) {
-				scale = button.toggleFullscreen(canvas);
-			};
-		};
+	if (fullscreenButton.isInside(clickPos, fullscreenButton)) {
+		// the 'toggleFullscreen' method returns 
+		// either true or false for scale.
+		scale = fullscreenButton.toggleFullscreen(canvas);
 	};
 };
 
@@ -302,15 +265,14 @@ function exitFullscreen() {
 
 let mousePos;
 
-
 function getMousePosition(event) {
 		let rect = canvas.getBoundingClientRect();
 	        mousePos = {
 			x : event.clientX - rect.left,
-        	y : event.clientY - rect.top
+        		y : event.clientY - rect.top
 		};
 
-		for (let button of inGameButtons) {
+		for (let button of buttons) {
 			if (button.isInside(mousePos, button)) {
 				button.colour = "brown";
 			} else {

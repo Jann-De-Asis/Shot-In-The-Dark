@@ -1,6 +1,5 @@
 export class Button {
-	constructor({type, x, y, width, height, colour}) {
-		this.type = type;
+	constructor({x, y, width, height, colour}) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -23,13 +22,24 @@ export class Button {
 				document.exitFullscreen();
 				return false;
 		};	
-	};	
+	};
+
+	draw(ctx, changedCanvasWidth, changedCanvasHeight) {
+		this.x.canvasWidth = changedCanvasWidth;
+
+                ctx.fillStyle = this.colour;
+                ctx.fillRect(
+                        this.x.canvasWidth - this.x.difference, 
+                        this.y.difference - this.y.canvasHeight, 
+                        this.width, 
+                        this.height
+                );
+	};
 };
 
 
 export class Bar {
-	constructor({type, x, y, width, height, colour}) {
-		this.type = type;
+	constructor({x, y, width, height, colour}) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -37,12 +47,15 @@ export class Bar {
 		this.colour = colour;
 	};
 
-	draw(ctx) {
+	draw(ctx, changedCanvasWidth, changedCanvasHeight) {
+		this.y.canvasHeight = changedCanvasHeight;
+		
 		ctx.fillStyle = this.colour;
 		ctx.fillRect(
 			this.x.difference + this.x.canvasWidth, 
 			this.y.canvasHeight - this.y.difference, 
 			this.width, 
-			this.height);
+			this.height
+		);
 	};
 };

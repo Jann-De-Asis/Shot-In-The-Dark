@@ -1,6 +1,5 @@
 export class Entity {
-	constructor({type, x, y, width, height, colour, velocity, ammunition, equip}) {
-		this.type = type;
+	constructor({x, y, width, height, colour, velocity, ammunition, equip}) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
