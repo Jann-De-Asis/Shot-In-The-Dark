@@ -1,7 +1,7 @@
 /* 
 JavaScript's ES6 Modules for import and export was learned here:
 Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
-Timestamp: 2:36 
+- Timestamp: 2:36 
 */
 import {Projectile} from "./classes/projectiles.js";
 import {Bar, Button} from "./classes/userInterface.js";
@@ -44,7 +44,9 @@ function init() {
 			ammunition : 3,
 			equip : new Firearm({
 				type : "glock19",
-				magazineType : "9mm"
+				magazineType : "9mm",
+				maxCapacity : 15,
+				capacity : 15
 			})
 		})
 
@@ -67,7 +69,7 @@ function init() {
 	);
 
 	bars.push (
-		new Bar({
+		ammunitionBar = new Bar({
 			x : {
 				canvasWidth : 0,
 				difference : 10
@@ -76,7 +78,7 @@ function init() {
 				canvasHeight : canvas.height,
 				difference : 20
 			},  
-			width : 300,
+			width : 0,
 			height : 15,
 			colour : "yellow",
 
@@ -105,7 +107,9 @@ let projectiles = {
 
 // All unique objects.
 let player; 
+
 let fullscreenButton;
+let ammunitionBar;
 
 function animate() {
 	window.requestAnimationFrame(animate);
@@ -147,14 +151,28 @@ function animate() {
 	for (let button of buttons) {
 		button.draw(ctx, canvas.width, canvas.height)
 	};
+	
+	if (player.equip === null) {
+		ammunitionBar.width = 0;
+	} else {
+		// Multiplies the bar to make it more visible.
+		ammunitionBar.width = player.equip.capacity * 8;
+	};
 
 	for (let bar of bars) {
 		bar.draw(ctx, canvas.width, canvas.height);
 	};
 
+	// Text
+	ctx.font = "30px  Andale Mono";
+	ctx.fillStyle = "black";
+	ctx.fillText("Ammo: " + player.ammunition, (canvas.width/2) - 50, 50)
+
 	// Reference Dot
 	ctx.fillStyle = "orange";
-	ctx.fillRect(200, 200, 10, 10);
+	ctx.fillRect(500, 500, 100, 100);
+
+	console.log(ammunitionBar.width);
 };
 
 
@@ -195,6 +213,13 @@ function deactivate(event) {
 	} else if (key === "d") {
 		player.moveRight = false;
 	};
+
+	if (key === "r") {
+		if (player.ammunition !== 0) {
+			player.ammunition -= 1;
+			player.equip.capacity = player.equip.maxCapacity;
+		};
+	};
 };
 
 
@@ -219,7 +244,7 @@ function onClick(event) {
 		Finding the angle and velocity inverse and basic trigonometry.
 		Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
 		Reference Link: (https://youtu.be/HXquxWtE5vA?si=n6eukRFpBSWR7r9_&t=8459)
-		Timestamp: 2:20:59 
+		- Timestamp: 2:20:59 
 		*/
 		const angle = Math.atan2(
 			clickPos.y - player.y, 
@@ -232,21 +257,25 @@ function onClick(event) {
 		};
 
 
+		if (player.equip.capacity !== 0) {
+			projectiles.playerProjectiles.push(
+						new Projectile({
+							x : player.x, 
+							y : player.y,
+							width : 10,
+							height : 10,
+							colour : "yellow",
+							velocity
+						})
+			);
 
-		projectiles.playerProjectiles.push(
-					new Projectile({
-						x : player.x, 
-						y : player.y,
-						width : 10,
-						height : 10,
-						colour : "yellow",
-						velocity
-					}));	
+			player.equip.capacity -= 1;
+		};
 	};
 
 	
 	if (fullscreenButton.isInside(clickPos, fullscreenButton)) {
-		// the 'toggleFullscreen' method returns 
+		// The 'toggleFullscreen' method returns 
 		// either true or false for scale.
 		scale = fullscreenButton.toggleFullscreen(canvas);
 	};
@@ -286,7 +315,7 @@ function getMousePosition(event) {
 /*
 Scaling the canvas based on new sizes while adapting for high-DPI displays.
 Reference Link (https://www.xjavascript.com/blog/how-do-i-fix-blurry-text-in-my-html5-canvas/)
-Section 2.2 in Table of Contents
+- Section 2.2 in Table of Contents
 */
 
 let ratio = window.devicePixelRatio;
