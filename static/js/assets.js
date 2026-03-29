@@ -1,0 +1,36 @@
+export function load_assets(assets, callback) {
+	let num_assets = assets.length;
+	let loaded = function() {
+		num_assets = num_assets - 1;
+		if (num_assets === 0) {
+			callback();
+		};
+	};
+};
+
+for (let asset of assets) {
+	let element = asset.var;
+	if (element instanceof HTMLImageElement) {
+		element.addEventListener("load", loaded, false);
+	} else if (element instanceof HTMLAudioElement) {
+		element.addEventListener("canplaythrough", loaded, false);
+	};
+	element.src = asset.url;
+};
+
+
+function loadingTileset(ctx) {
+	for (let r = 0; r < 20; r += 1) {
+		for (let c = 0; c < 32; c += 1) {
+			let tile = background[r][c];
+			if (tile >= 0) {
+				let tileRow = Math.floor(tile / tilesPerRow)
+				let tileCol = Math.floor(tile % tilesPerRow);
+				ctx.drawImage(backgroundImage,
+					tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
+					c * tileSize, r * tileSize, tileSize, tileSize);
+			};
+		};
+	};
+};
+
