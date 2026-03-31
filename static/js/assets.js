@@ -1,6 +1,8 @@
 export {assetLoading, drawingTileset};
 
+
 const environmentTileset = new Image();
+
 
 function assetLoading(animate) { 
 	
@@ -33,9 +35,11 @@ function assetLoading(animate) {
 function drawingTileset(ctx) {
 	const tilesPerRow = 24;
 	const tileSize = 16;
-	
-	// Unfortunately, you're going to have to make a Python file that subtracts this data by 1 so it's correct...
+	const tileScale = 2;
 
+	// Background values were created using an application called: "Tiled"
+	// and reformated using a basic python script.
+	// Reference Link: (https://www.mapeditor.org/)
 	const background = [
 		[0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 1, 2, 0, 0, 1, 2], 
 		[24, 25, 26, 24, 25, 26, 24, 25, 26, 24, 25, 26, 24, 24, 25, 26], 
@@ -54,20 +58,18 @@ function drawingTileset(ctx) {
 		[24, 25, 26, 25, 26, 24, 25, 48, 24, 25, 48, 49, 24, 48, 49, 50], 
 		[48, 49, 50, 49, 50, 48, 49, 50, 48, 49, 48, 49, 48, 48, 49, 50]
 	];
-
-
-	/*
-	for (let row = 0; row < 20; row += 1) {
-		for (let col = 0; col < 32; col += 1) {
+	
+	for (let row = 0; row < background.length; row += 1) {
+		for (let col = 0; col < background[0].length; col += 1) {
 			let tile = background[row][col];
 			if (tile >= 0) {
 				let tileRow = Math.floor(tile / tilesPerRow)
 				let tileCol = Math.floor(tile % tilesPerRow);
+				ctx.imageSmoothingEnabled = false;
 				ctx.drawImage(environmentTileset,
 					tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
-					col * tileSize, row * tileSize, tileSize, tileSize);
+					(col*tileSize) * tileScale, (row*tileSize) * tileScale, tileSize * tileScale, tileSize * tileScale);
 			};
 		};
 	};
-	*/
 };

@@ -169,10 +169,6 @@ function animate() {
 	ctx.font = "30px  Andale Mono";
 	ctx.fillStyle = "black";
 	ctx.fillText("Ammo: " + player.ammunition, (canvas.width/2) - 50, 50)
-
-	// Reference Dot
-	ctx.fillStyle = "orange";
-	ctx.fillRect(500, 500, 100, 100);
 };
 
 
