@@ -1,4 +1,6 @@
-export class Button {
+export {Button, Bar};
+
+class Button {
 	constructor({x, y, width, height, colour}) {
 		this.x = x;
 		this.y = y;
@@ -38,7 +40,7 @@ export class Button {
 };
 
 
-export class Bar {
+class Bar {
 	constructor({x, y, width, height, colour}) {
 		this.x = x;
 		this.y = y;

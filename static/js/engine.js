@@ -8,6 +8,7 @@ import {Bar, Button} from "./classes/userInterface.js";
 import {Entity} from  "./classes/entities.js";
 import {Firearm} from  "./classes/items.js";
 
+import {assetLoading, drawingTileset} from "./assets.js";
 
 document.addEventListener("DOMContentLoaded", init, false);
 
@@ -85,7 +86,7 @@ function init() {
 		})
 	);
 		
-	animate();
+	assetLoading(animate);
 };
 
 
@@ -135,6 +136,7 @@ function animate() {
 		scalingCanvas(600, 400);
 	};
 
+	drawingTileset(ctx);
 	
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
@@ -171,8 +173,6 @@ function animate() {
 	// Reference Dot
 	ctx.fillStyle = "orange";
 	ctx.fillRect(500, 500, 100, 100);
-
-	console.log(ammunitionBar.width);
 };
 
 
