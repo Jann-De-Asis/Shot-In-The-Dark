@@ -130,12 +130,13 @@ function animate() {
 
 	// Constantly updating the scale to account for changes
 	// in size for fullscreen mode.
+	
 	if (scale) {
 		scalingCanvas(window.innerWidth, window.innerHeight);
 	} else {
 		scalingCanvas(600, 400);
 	};
-
+	
 	drawingTileset(ctx);
 	
 	// Looping backwards to account for projectiles being 
@@ -314,15 +315,17 @@ Reference Link (https://www.xjavascript.com/blog/how-do-i-fix-blurry-text-in-my-
 - Section 2.2 in Table of Contents
 */
 
-let ratio = window.devicePixelRatio;
+// Potentially broken and redundant...
+
+// let ratio = window.devicePixelRatio;
 let scale = false;
 
 function scalingCanvas(width, height) {
 
-	canvas.width = width * ratio;
-	canvas.height = height * ratio;
-	canvas.getContext("2d").scale(ratio, ratio);
-
+	canvas.width = width;
+	canvas.height = height;
+	// ctx.scale(ratio, ratio);
+	
 	return canvas;
 };	
 
