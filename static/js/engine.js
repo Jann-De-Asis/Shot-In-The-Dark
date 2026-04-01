@@ -73,7 +73,7 @@ function init() {
 		ammunitionBar = new Bar({
 			x : {
 				canvasWidth : 0,
-				difference : 10
+				difference : 140
 			}, 
 			y : {
 				canvasHeight : canvas.height,
@@ -85,10 +85,11 @@ function init() {
 
 		})
 	);
-		
+	
 	assetLoading(animate);
 };
 
+let sample_dict;
 
 // Framerate 
 const fpsInterval = 1000 / 30;
@@ -169,7 +170,7 @@ function animate() {
 	// Text
 	ctx.font = "30px  Andale Mono";
 	ctx.fillStyle = "black";
-	ctx.fillText("Ammo: " + player.ammunition, (canvas.width/2) - 50, 50)
+	ctx.fillText("Ammo: " + player.ammunition, 10, canvas.height - 10)
 };
 
 
