@@ -50,7 +50,6 @@ function init() {
 				capacity : 15
 			})
 		})
-
 	);
 
 	buttons.push(
@@ -85,11 +84,9 @@ function init() {
 
 		})
 	);
-	
+		
 	assetLoading(animate);
 };
-
-let sample_dict;
 
 // Framerate 
 const fpsInterval = 1000 / 30;

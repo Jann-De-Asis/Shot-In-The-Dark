@@ -14,7 +14,7 @@ class Button {
 			 && (pos.x < ((box.x.canvasWidth-box.x.difference) + box.width)) 
 			 && (pos.y < ((box.y.difference-box.y.canvasHeight) + box.height)) 
 			 && (pos.y > (box.y.difference-box.y.canvasHeight)));
-};
+	};
 
 	toggleFullscreen(canvas) {
 		if (document.fullscreenElement === null) {
