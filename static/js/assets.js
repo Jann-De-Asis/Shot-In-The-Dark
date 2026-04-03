@@ -32,7 +32,6 @@ function assetLoading(animate) {
 	], animate);
 };
 
-console.log(layers)
 
 function drawingTileset(ctx) {
 	const tilesPerRow = 24;
