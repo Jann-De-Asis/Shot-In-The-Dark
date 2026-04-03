@@ -4,5 +4,5 @@ export const layers = {
 		treeLayer2: [],
 		structureLayer1: [],
 		structureLayer2: []
-	};
+};
 
