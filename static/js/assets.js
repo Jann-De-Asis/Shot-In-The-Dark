@@ -1,9 +1,9 @@
 import { layers } from "./map_values.js"
 
-export { assetLoading, drawingTileset };
+export { assetLoading, drawingTileset, drawingPlayerSprite };
 
 const environmentTileset = new Image();
-
+const playerSprite = new Image();
 
 function assetLoading(animate) {
 
@@ -29,7 +29,15 @@ function assetLoading(animate) {
 
 	renderingAsset([
 		{ "var": environmentTileset, "url": "/static/images/game/environment_tileset.png" },
+		{ "var": playerSprite, "url": "/static/images/game/player_sprite.png" }
 	], animate);
+};
+
+
+function drawingPlayerSprite(ctx, player) {
+	ctx.drawImage(playerSprite,
+		(player.frameX * player.width),  (player.frameY * player.height), player.width, player.height,
+		player.x, player.y, player.width, player.height);	
 };
 
 
@@ -45,17 +53,15 @@ function drawingTileset(ctx) {
 		for (let row = 0; row < layers[layer].length; row += 1) {
 			for (let col = 0; col < layers[layer][row].length; col += 1) {
 				const tile = layers[layer][row][col];
-					if (tile >= 0) {
-						const tileRow = Math.floor(tile / tilesPerRow)
-						const tileCol = Math.floor(tile % tilesPerRow);
-						ctx.imageSmoothingEnabled = false;
-						ctx.drawImage(environmentTileset,
-							tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
-							(col*tileSize) * tileScale, (row*tileSize) * tileScale, tileSize * tileScale, tileSize * tileScale);
-					};
-
+				if (tile >= 0) {
+					const tileRow = Math.floor(tile / tilesPerRow)
+					const tileCol = Math.floor(tile % tilesPerRow);
+					ctx.imageSmoothingEnabled = false;
+					ctx.drawImage(environmentTileset,
+						tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
+						(col*tileSize) * tileScale, (row*tileSize) * tileScale, tileSize * tileScale, tileSize * tileScale);
+				};
 			};
-
 		};
 	};
 };

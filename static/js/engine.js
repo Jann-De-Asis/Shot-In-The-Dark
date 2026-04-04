@@ -37,7 +37,8 @@ function init() {
 			y : canvas.height / 2,
 			width : 15,
 			height : 25,
-			colour : "red",
+			frameX : 0,
+			frameY : 0,
 			velocity : {
 				x : 5,
 				y : 5
