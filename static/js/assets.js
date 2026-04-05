@@ -35,9 +35,11 @@ function assetLoading(animate) {
 
 
 function drawingPlayerSprite(ctx, player) {
+	const spriteScale = 3;
+
 	ctx.drawImage(playerSprite,
 		(player.frameX * player.width),  (player.frameY * player.height), player.width, player.height,
-		player.x, player.y, player.width, player.height);	
+		player.x, player.y, player.width * spriteScale, player.height * spriteScale);	
 };
 
 
@@ -56,7 +58,6 @@ function drawingTileset(ctx) {
 				if (tile >= 0) {
 					const tileRow = Math.floor(tile / tilesPerRow)
 					const tileCol = Math.floor(tile % tilesPerRow);
-					ctx.imageSmoothingEnabled = false;
 					ctx.drawImage(environmentTileset,
 						tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
 						(col*tileSize) * tileScale, (row*tileSize) * tileScale, tileSize * tileScale, tileSize * tileScale);

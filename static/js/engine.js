@@ -3,12 +3,12 @@ JavaScript's ES6 Modules for import and export was learned here:
 Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 - Timestamp: 2:36 
 */
-import {Projectile} from "./classes/projectiles.js";
-import {Bar, Button} from "./classes/userInterface.js";
-import {Entity} from  "./classes/entities.js";
-import {Firearm} from  "./classes/items.js";
+import { Projectile } from "./classes/projectiles.js";
+import { Bar, Button } from "./classes/userInterface.js";
+import { Entity } from  "./classes/entities.js";
+import { Firearm } from  "./classes/items.js";
 
-import {assetLoading, drawingTileset} from "./assets.js";
+import { assetLoading, drawingTileset, drawingPlayerSprite } from "./assets.js";
 
 document.addEventListener("DOMContentLoaded", init, false);
 
@@ -19,7 +19,7 @@ let ctx;
 function init() {
 	canvas = document.querySelector("canvas");
 	ctx = canvas.getContext("2d");
-
+	
 	window.addEventListener("keydown", activate, false);
 	window.addEventListener("keyup", deactivate, false);
 
@@ -35,8 +35,8 @@ function init() {
 		player = new Entity({
 			x : canvas.width / 2,
 			y : canvas.height / 2,
-			width : 15,
-			height : 25,
+			width : 13,
+			height : 16,
 			frameX : 0,
 			frameY : 0,
 			velocity : {
@@ -135,13 +135,19 @@ function animate() {
 	} else {
 		scalingCanvas(600, 400);
 	};
-	
+
+	ctx.imageSmoothingEnabled = false;
+
 	drawingTileset(ctx);
+
+	drawingPlayerSprite(ctx, player);
+	
+	player.movement();
 	
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
 	for (let i = (entities.length - 1); i >= 0; i--) {
-		entities[i].draw(ctx);
+		entities[i];
 	};
 
 	for (let projectileType in projectiles) {
