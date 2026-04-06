@@ -33,12 +33,21 @@ function init() {
 	
 	entities.push(
 		player = new Entity({
-			x : canvas.width / 2,
-			y : canvas.height / 2,
-			width : 13,
-			height : 16,
-			frameX : 0,
-			frameY : 0,
+			x: canvas.width / 2,
+			y: canvas.height / 2,
+			
+			width: 13,
+			height: 16,
+			frame : {
+				x : 0,
+				y : 0
+			},
+			frameOffset : {
+				x : 0,
+				y : 0
+			},
+			spriteScale: 3,
+
 			velocity : {
 				x : 5,
 				y : 5
@@ -113,7 +122,7 @@ let ammunitionBar;
 
 function animate() {
 	window.requestAnimationFrame(animate);
-	
+
 	// Manages the frames per second (fps) 
 	// through the denominator of 'fpsInterval'.
 	let now = Date.now();
@@ -124,12 +133,11 @@ function animate() {
 	then = now - (elapsed % fpsInterval);
 
 	// Clearing the canvas every frame to give
-	// the illusion of movement.
+	// the illusion of animation.
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	// Constantly updating the scale to account for changes
-	// in size for fullscreen mode.
 	
+	// Constantly updating the scale to account for changes
+	// in size for fullscreen mode.	
 	if (scale) {
 		scalingCanvas(window.innerWidth, window.innerHeight);
 	} else {
@@ -137,7 +145,7 @@ function animate() {
 	};
 
 	ctx.imageSmoothingEnabled = false;
-
+	
 	drawingTileset(ctx);
 
 	drawingPlayerSprite(ctx, player);
@@ -186,13 +194,42 @@ function activate(event) {
 		player.velocity.y = player.velocity.y * player.sprintIncrease;
 	};
 
+	// Player's attributes must be updated every direction
+	// to account for the difference in the sprite sheet.
 	if (key === "w") {
+		player.width = 13;
+		player.height = 17;
+		player.frameOffset.x = -1;
+		player.frameOffset.y = -4;
+		player.frame.y = 6;
+		
 		player.moveUp = true;
+	
 	} else if (key === "a") {
+		player.width = 14;
+		player.height = 17;
+		player.frameOffset.x = -1;
+		player.frameOffset.y = -4;
+		player.frame.y = 7;
+
 		player.moveLeft = true;
+	
 	} else if (key === "s") {
+		player.width = 13;
+		player.height = 17;
+		player.frameOffset.x = -1;
+		player.frameOffset.y = -4;
+		player.frame.y = 4;
+
 		player.moveDown = true;
+
 	} else if (key === "d") {
+		player.width = 14;
+		player.height = 17;
+		player.frameOffset.x = -1;
+		player.frameOffset.y = -4;
+		player.frame.y = 5;
+		
 		player.moveRight = true;
 	};	
 };
@@ -207,23 +244,49 @@ function deactivate(event) {
 	};
 
 	if (key === "w") {
+		player.width = 13;
+		player.height = 16;
+		player.frameOffset.x = 0;
+		player.frameOffset.y = 0;
+		player.frame.y = 3;
+		
 		player.moveUp = false;
+	
 	} else if (key === "a") {
+		player.width = 12;
+		player.height = 16;
+		player.frameOffset.x = 0;
+		player.frameOffset.y = 0;
+		player.frame.y = 2;
+		
 		player.moveLeft = false;
+	
 	} else if (key === "s") {
+		player.width = 13;
+		player.height = 16;
+		player.frameOffset.x = 0;
+		player.frameOffset.y = 0;
+		player.frame.y = 0;
+		
 		player.moveDown = false;
+
 	} else if (key === "d") {
+		player.width = 12;
+		player.height = 16;
+		player.frameOffset.x = 0;
+		player.frameOffset.y = 0;
+		player.frame.y = 1;
+		
 		player.moveRight = false;
 	};
-
+	
 	if (key === "r") {
 		if (player.ammunition !== 0) {
-			player.ammunition -= 1;
+			player.ammunition--;
 			player.equip.capacity = player.equip.maxCapacity;
 		};
 	};
 };
-
 
 let clickPos;
 
@@ -249,8 +312,10 @@ function onClick(event) {
 		- Timestamp: 2:20:59 
 		*/
 		const angle = Math.atan2(
-			clickPos.y - player.y, 
-			clickPos.x - player.x
+			clickPos.y - (player.y + ((player.width/2) * 3) - 5), 
+ 
+			clickPos.x - (player.x + ((player.width/2) * 3) - 5), 
+
 		);
 
 		const velocity = {
@@ -262,8 +327,8 @@ function onClick(event) {
 		if (player.equip.capacity !== 0) {
 			projectiles.playerProjectiles.push(
 						new Projectile({
-							x : player.x, 
-							y : player.y,
+							x : (player.x + ((player.width/2) * 3) - 5), 
+							y : (player.y + ((player.height/2) * 3) - 5), 
 							width : 10,
 							height : 10,
 							colour : "yellow",
@@ -302,7 +367,13 @@ function getMousePosition(event) {
 			x : event.clientX - rect.left,
         		y : event.clientY - rect.top
 		};
-
+		
+		const angle = Math.atan2(
+			mousePos.y - player.y, 
+			mousePos.x - player.x
+		);
+		console.log(angle);
+	
 		for (let button of buttons) {
 			if (button.isInside(mousePos, button)) {
 				button.colour = "brown";

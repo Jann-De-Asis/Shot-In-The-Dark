@@ -28,18 +28,16 @@ function assetLoading(animate) {
 	};
 
 	renderingAsset([
-		{ "var": environmentTileset, "url": "/static/images/game/environment_tileset.png" },
-		{ "var": playerSprite, "url": "/static/images/game/player_sprite.png" }
+		{ "var": environmentTileset, "url": "/static/game_images/environment_tileset.png" },
+		{ "var": playerSprite, "url": "/static/game_images/player_sprite.png" }
 	], animate);
 };
 
 
 function drawingPlayerSprite(ctx, player) {
-	const spriteScale = 3;
-
 	ctx.drawImage(playerSprite,
-		(player.frameX * player.width),  (player.frameY * player.height), player.width, player.height,
-		player.x, player.y, player.width * spriteScale, player.height * spriteScale);	
+		(player.frame.x*player.width) + player.frameOffset.x,  (player.frame.y*player.height) + player.frameOffset.y, player.width, player.height,
+		player.x, player.y, player.width * player.spriteScale, player.height * player.spriteScale);	
 };
 
 
