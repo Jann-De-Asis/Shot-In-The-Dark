@@ -4,7 +4,7 @@ Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 - Timestamp: 2:36 
 */
 import { Projectile } from "./classes/projectiles.js";
-import { Bar, Button } from "./classes/userInterface.js";
+import { Bar, Button } from "./classes/user_interface.js";
 import { Entity } from  "./classes/entities.js";
 import { Firearm } from  "./classes/items.js";
 
@@ -33,64 +33,70 @@ function init() {
 	
 	entities.push(
 		player = new Entity({
-			x: canvas.width / 2,
-			y: canvas.height / 2,
-			
-			width: 13,
-			height: 16,
-			frame : {
-				x : 0,
-				y : 0
+			position: {
+				x: canvas.width / 2,
+				y: canvas.height / 2
 			},
-			frameOffset : {
-				x : 0,
-				y : 0
+			size: {
+				width: 13,
+				height: 16
+			},
+			framePosition: {
+				x: 0,
+				y: 0
+			},
+			frameOffset: {
+				x: 0,
+				y: 0
 			},
 			spriteScale: 3,
-
-			velocity : {
-				x : 5,
-				y : 5
-			},
-			ammunition : 3,
-			equip : new Firearm({
-				type : "glock19",
-				magazineType : "9mm",
-				maxCapacity : 15,
-				capacity : 15
-			})
+			
+			player: {
+				velocity: {
+					x: 5,
+					y: 5
+				},
+				ammunition: 3,
+				equip: new Firearm({
+					type: "glock19",
+					magazineType: "9mm",
+					maxCapacity: 15,
+					capacity: 15
+				})
+			
+			}
 		})
 	);
 
 	buttons.push(
 		fullscreenButton = new Button({
-					x : {
-						canvasWidth : canvas.width,
-						difference : 20
+					x: {
+						canvasWidth: canvas.width,
+						difference: 20
 					}, 
-					y : {
-						canvasHeight : 0,
-						difference : 10
+					y: {
+						canvasHeight: 0,
+						difference: 10
 					},  
-					width : 10, 
-					height : 10, 
-					colour : "gray",
+					width: 10, 
+					height: 10, 
+					colour: "gray",
 					})
 	);
 
 	bars.push (
 		ammunitionBar = new Bar({
-			x : {
-				canvasWidth : 0,
-				difference : 140
+			x: {
+				canvasWidth: 0,
+				difference: 140
 			}, 
-			y : {
-				canvasHeight : canvas.height,
-				difference : 20
+			y: {
+				canvasHeight: canvas.height,
+				difference: 20
 			},  
-			width : 0,
-			height : 15,
-			colour : "yellow",
+			width: 0,
+			height: 15,
+			colour: "yellow",
 
 		})
 	);
@@ -110,8 +116,8 @@ let buttons = [];
 let entities = [];
 
 let projectiles = {
-	playerProjectiles : [],
-	enemyProjectiles : []
+	playerProjectiles: [],
+	enemyProjectiles: []
 };
 
 // All unique objects.
@@ -147,8 +153,10 @@ function animate() {
 	ctx.imageSmoothingEnabled = false;
 	
 	drawingTileset(ctx);
-	
+
 	drawingPlayerSprite(ctx, player);
+
+	console.log(player.player.velocity.x);
 
 	player.movement();
 	player.animation(cursorAngle(cursorPos));
@@ -184,8 +192,6 @@ function animate() {
 	ctx.font = "30px  Andale Mono";
 	ctx.fillStyle = "black";
 	ctx.fillText("Ammo: " + player.ammunition, 10, canvas.height - 10)
-
-	// console.log(mousekey)
 };
 
 let mousekey
@@ -283,8 +289,8 @@ function onClick(event) {
 	*/
 	let rect = canvas.getBoundingClientRect();
         clickPos = {
-		x : event.clientX - rect.left,
-          	y : event.clientY - rect.top
+		x: event.clientX - rect.left,
+          	y: event.clientY - rect.top
 	};
 
 	// Left-mouse button
@@ -302,19 +308,19 @@ function onClick(event) {
 		);
 
 		const velocity = {
-			x : Math.cos(angle) * 50,
-			y : Math.sin(angle) * 50
+			x: Math.cos(angle) * 50,
+			y: Math.sin(angle) * 50
 		};
 
 
 		if (player.equip.capacity !== 0) {
 			projectiles.playerProjectiles.push(
 						new Projectile({
-							x : (player.x + ((player.width/2)*player.spriteScale) - 5), 
-							y : (player.y + ((player.height/2)*player.spriteScale) - 5), 
-							width : 10,
-							height : 10,
-							colour : "yellow",
+							x: (player.x + ((player.width/2)*player.spriteScale) - 5), 
+							y: (player.y + ((player.height/2)*player.spriteScale) - 5), 
+							width: 10,
+							height: 10,
+							colour: "yellow",
 							velocity
 						})
 			);
@@ -347,8 +353,8 @@ let cursorPos;
 function cursorPosition(event) {
 		let rect = canvas.getBoundingClientRect();
 	        cursorPos = {
-			x : event.clientX - rect.left,
-        		y : event.clientY - rect.top
+			x: event.clientX - rect.left,
+        		y: event.clientY - rect.top
 		};
 		
 		for (let button of buttons) {
@@ -368,7 +374,7 @@ function cursorAngle(cursorPos) {
 		a ternary operator.
 		Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator) 
 		*/
-		return cursorPos === undefined ? 90 : Math.atan2(
+		return cursorPos === undefined ? 90: Math.atan2(
 				cursorPos.y - (player.y + (player.height/2)*player.spriteScale), 
 				cursorPos.x - (player.x + (player.width/2)*player.spriteScale) 
 				) * 180 / Math.PI;

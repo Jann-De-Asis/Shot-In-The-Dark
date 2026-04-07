@@ -36,8 +36,8 @@ function assetLoading(animate) {
 
 function drawingPlayerSprite(ctx, player) {
 	ctx.drawImage(playerSprite,
-		(player.frame.x*player.width) + player.frameOffset.x,  (player.frame.y*player.height) + player.frameOffset.y, player.width, player.height,
-		player.x, player.y, player.width * player.spriteScale, player.height * player.spriteScale);	
+		(player.framePosition.x*player.size.width)+player.frameOffset.x,  (player.framePosition.y*player.size.height)+player.frameOffset.y, player.size.width, player.size.height,
+		player.position.x, player.position.y, player.size.width * player.spriteScale, player.size.height * player.spriteScale);	
 	/*
 	Displays and delays the sprite animation cycle.
 	Reference Link: (https://stackoverflow.com/questions/69059989/how-do-i-slowdown-my-sprite-animation-in-javascript-canvas)
@@ -47,7 +47,7 @@ function drawingPlayerSprite(ctx, player) {
 		player.animationDelay--;
 	} else {
 		player.forwardCycle ? 
-		(player.frame.x = (player.frame.x+1) % 6) : (player.frame.x = ((player.frame.x+6)-1) % 6);
+		(player.framePosition.x = (player.framePosition.x+1) % 6) : (player.framePosition.x = ((player.framePosition.x+6)-1) % 6);
 		player.animationDelay = 1.25;
 	};
 };
