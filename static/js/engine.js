@@ -24,7 +24,7 @@ function init() {
 	window.addEventListener("keyup", deactivate, false);
 
 	canvas.addEventListener("mousedown", onClick, false);
-	canvas.addEventListener("mousemove", getMousePosition, false);
+	canvas.addEventListener("mousemove", mousePosition, false);
 
 	document.addEventListener("fullscreenchange", exitFullscreen, false);
 
@@ -147,9 +147,9 @@ function animate() {
 	ctx.imageSmoothingEnabled = false;
 	
 	drawingTileset(ctx);
-
-	drawingPlayerSprite(ctx, player);
 	
+	drawingPlayerSprite(ctx, player);
+
 	player.movement();
 	
 	// Looping backwards to account for projectiles being 
@@ -194,8 +194,6 @@ function activate(event) {
 		player.velocity.y = player.velocity.y * player.sprintIncrease;
 	};
 
-	// Player's attributes must be updated every direction
-	// to account for the difference in the sprite sheet.
 	if (key === "w") {
 		player.width = 13;
 		player.height = 17;
@@ -243,40 +241,16 @@ function deactivate(event) {
 		player.velocity.y = player.velocity.y / player.sprintIncrease;
 	};
 
-	if (key === "w") {
-		player.width = 13;
-		player.height = 16;
-		player.frameOffset.x = 0;
-		player.frameOffset.y = 0;
-		player.frame.y = 3;
-		
+	if (key === "w") {	
 		player.moveUp = false;
 	
 	} else if (key === "a") {
-		player.width = 12;
-		player.height = 16;
-		player.frameOffset.x = 0;
-		player.frameOffset.y = 0;
-		player.frame.y = 2;
-		
 		player.moveLeft = false;
 	
 	} else if (key === "s") {
-		player.width = 13;
-		player.height = 16;
-		player.frameOffset.x = 0;
-		player.frameOffset.y = 0;
-		player.frame.y = 0;
-		
 		player.moveDown = false;
 
 	} else if (key === "d") {
-		player.width = 12;
-		player.height = 16;
-		player.frameOffset.x = 0;
-		player.frameOffset.y = 0;
-		player.frame.y = 1;
-		
 		player.moveRight = false;
 	};
 	
@@ -312,10 +286,8 @@ function onClick(event) {
 		- Timestamp: 2:20:59 
 		*/
 		const angle = Math.atan2(
-			clickPos.y - (player.y + ((player.width/2) * 3) - 5), 
- 
-			clickPos.x - (player.x + ((player.width/2) * 3) - 5), 
-
+			clickPos.y - (player.y + ((player.height/2)*player.spriteScale) - 5), 
+			clickPos.x - (player.x + ((player.width/2)*player.spriteScale) - 5) 
 		);
 
 		const velocity = {
@@ -327,8 +299,8 @@ function onClick(event) {
 		if (player.equip.capacity !== 0) {
 			projectiles.playerProjectiles.push(
 						new Projectile({
-							x : (player.x + ((player.width/2) * 3) - 5), 
-							y : (player.y + ((player.height/2) * 3) - 5), 
+							x : (player.x + ((player.width/2)*player.spriteScale) - 5), 
+							y : (player.y + ((player.height/2)*player.spriteScale) - 5), 
 							width : 10,
 							height : 10,
 							colour : "yellow",
@@ -361,19 +333,56 @@ function exitFullscreen() {
 
 let mousePos;
 
-function getMousePosition(event) {
+
+function mousePosition(event) {
 		let rect = canvas.getBoundingClientRect();
 	        mousePos = {
 			x : event.clientX - rect.left,
         		y : event.clientY - rect.top
 		};
-		
-		const angle = Math.atan2(
-			mousePos.y - player.y, 
-			mousePos.x - player.x
-		);
-		console.log(angle);
 	
+		// Changed to degrees!	
+		const angle = Math.atan2(
+			mousePos.y - (player.y + (player.height/2)*player.spriteScale), 
+			mousePos.x - (player.x + (player.width/2)*player.spriteScale) 
+		) * 180 / Math.PI;
+
+		// Player's attributes must be updated every direction
+		// to account for the difference in the sprite sheet.
+		if (angle < -45 && angle >= -135) {
+			// Upward View
+			player.width = 13;
+			player.height = 16;
+			player.frameOffset.x = 0;
+			player.frameOffset.y = 0;
+			player.frame.y = 3;
+		
+		} else if (angle < -135 || angle >= 135) {
+			// Left-side View
+			player.width = 12;
+			player.height = 16;
+			player.frameOffset.x = 0;
+			player.frameOffset.y = 0;
+			player.frame.y = 2;
+
+		} else if (angle < 135 && angle >= 45) {
+			// Downward View
+			player.width = 13;
+			player.height = 16;
+			player.frameOffset.x = 0;
+			player.frameOffset.y = 0;
+			player.frame.y = 0;
+
+		} else if (angle < 45 && angle >= -45) {
+			// Right-side View
+			player.width = 12;
+			player.height = 16;
+			player.frameOffset.x = 0;
+			player.frameOffset.y = 0;
+			player.frame.y = 1;
+		
+		};
+
 		for (let button of buttons) {
 			if (button.isInside(mousePos, button)) {
 				button.colour = "brown";
