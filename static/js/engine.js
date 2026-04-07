@@ -24,7 +24,7 @@ function init() {
 	window.addEventListener("keyup", deactivate, false);
 
 	canvas.addEventListener("mousedown", onClick, false);
-	canvas.addEventListener("mousemove", mousePosition, false);
+	canvas.addEventListener("mousemove", cursorPosition, false);
 
 	document.addEventListener("fullscreenchange", exitFullscreen, false);
 
@@ -94,7 +94,7 @@ function init() {
 
 		})
 	);
-		
+
 	assetLoading(animate);
 };
 
@@ -151,6 +151,7 @@ function animate() {
 	drawingPlayerSprite(ctx, player);
 
 	player.movement();
+	player.animation(cursorAngle(cursorPos));
 	
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
@@ -183,53 +184,52 @@ function animate() {
 	ctx.font = "30px  Andale Mono";
 	ctx.fillStyle = "black";
 	ctx.fillText("Ammo: " + player.ammunition, 10, canvas.height - 10)
+
+	// console.log(mousekey)
 };
 
+let mousekey
 
 function activate(event) {
 	let key = event.key.toLowerCase();
-		
+
+	mousekey = key;
+
 	if (key === "shift") {	
 		player.velocity.x = player.velocity.x * player.sprintIncrease;
 		player.velocity.y = player.velocity.y * player.sprintIncrease;
 	};
 
-	if (key === "w") {
-		player.width = 13;
-		player.height = 17;
-		player.frameOffset.x = -1;
-		player.frameOffset.y = -4;
-		player.frame.y = 6;
-		
+
+
+	if (key === "w") {	
 		player.moveUp = true;
-	
+
 	} else if (key === "a") {
+		/*
 		player.width = 14;
 		player.height = 17;
 		player.frameOffset.x = -1;
 		player.frameOffset.y = -4;
 		player.frame.y = 7;
+		*/
 
 		player.moveLeft = true;
 	
 	} else if (key === "s") {
-		player.width = 13;
-		player.height = 17;
-		player.frameOffset.x = -1;
-		player.frameOffset.y = -4;
-		player.frame.y = 4;
-
 		player.moveDown = true;
 
 	} else if (key === "d") {
+		/*
 		player.width = 14;
 		player.height = 17;
 		player.frameOffset.x = -1;
 		player.frameOffset.y = -4;
 		player.frame.y = 5;
-		
+		*/
+
 		player.moveRight = true;
-	};	
+	};
 };
 
 
@@ -240,6 +240,17 @@ function deactivate(event) {
 		player.velocity.x = player.velocity.x / player.sprintIncrease;
 		player.velocity.y = player.velocity.y / player.sprintIncrease;
 	};
+	
+	/*
+	if (player.frame.y === 2) {
+		console.log("working2");
+		player.width = 12;
+		player.height = 16;
+		player.frameOffset.x = 0;
+		player.frameOffset.y = 0;
+		player.frame.y = 2;
+	}
+	*/
 
 	if (key === "w") {	
 		player.moveUp = false;
@@ -280,7 +291,7 @@ function onClick(event) {
 	if (event.button === 0) {
 		
 		/* 
-		Finding the angle and velocity inverse and basic trigonometry.
+		Finding the angle and velocity using inverse trigonometry and basic trigonometry.
 		Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
 		Reference Link: (https://youtu.be/HXquxWtE5vA?si=n6eukRFpBSWR7r9_&t=8459)
 		- Timestamp: 2:20:59 
@@ -331,66 +342,39 @@ function exitFullscreen() {
 };
 
 
-let mousePos;
+let cursorPos;
 
-
-function mousePosition(event) {
+function cursorPosition(event) {
 		let rect = canvas.getBoundingClientRect();
-	        mousePos = {
+	        cursorPos = {
 			x : event.clientX - rect.left,
         		y : event.clientY - rect.top
 		};
-	
-		// Changed to degrees!	
-		const angle = Math.atan2(
-			mousePos.y - (player.y + (player.height/2)*player.spriteScale), 
-			mousePos.x - (player.x + (player.width/2)*player.spriteScale) 
-		) * 180 / Math.PI;
-
-		// Player's attributes must be updated every direction
-		// to account for the difference in the sprite sheet.
-		if (angle < -45 && angle >= -135) {
-			// Upward View
-			player.width = 13;
-			player.height = 16;
-			player.frameOffset.x = 0;
-			player.frameOffset.y = 0;
-			player.frame.y = 3;
 		
-		} else if (angle < -135 || angle >= 135) {
-			// Left-side View
-			player.width = 12;
-			player.height = 16;
-			player.frameOffset.x = 0;
-			player.frameOffset.y = 0;
-			player.frame.y = 2;
-
-		} else if (angle < 135 && angle >= 45) {
-			// Downward View
-			player.width = 13;
-			player.height = 16;
-			player.frameOffset.x = 0;
-			player.frameOffset.y = 0;
-			player.frame.y = 0;
-
-		} else if (angle < 45 && angle >= -45) {
-			// Right-side View
-			player.width = 12;
-			player.height = 16;
-			player.frameOffset.x = 0;
-			player.frameOffset.y = 0;
-			player.frame.y = 1;
-		
-		};
-
 		for (let button of buttons) {
-			if (button.isInside(mousePos, button)) {
+			if (button.isInside(cursorPos, button)) {
 				button.colour = "brown";
 			} else {
 				button.colour = "gray";
 			};
 		};
 };
+
+
+function cursorAngle(cursorPos) {
+		/*
+		'cursorPos' is set to 'undefined' until the mouse moves. Therefore,
+		the default case will be set to be facing down (i.e. 90 degrees) using 
+		a ternary operator.
+		Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator) 
+		*/
+		return cursorPos === undefined ? 90 : Math.atan2(
+				cursorPos.y - (player.y + (player.height/2)*player.spriteScale), 
+				cursorPos.x - (player.x + (player.width/2)*player.spriteScale) 
+				) * 180 / Math.PI;
+		// (Note: atan2() has been changed to degrees!)
+};
+
 
 // MISCELLANEOUS
 
