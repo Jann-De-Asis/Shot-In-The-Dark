@@ -18,10 +18,13 @@ export class Entity {
 	
 		this.sprintIncrease = 2; // Mutliplied
 		
-		this.animationDelay = 1.25;
+		this.forwardCycle = true;
+		this.animationDelay = 1.25;  // Delay By Decreasing Such By 1
 	};
 
 	animation(cursorAngle) {	
+		// Entity's attributes must be updated every direction
+		// to account for the difference in the sprite sheet.	
 		if (cursorAngle < -45 && cursorAngle >= -135) {
 			// Facing Up
 			this.width = 13;
@@ -32,11 +35,30 @@ export class Entity {
 
 		} else if (cursorAngle < -135 || cursorAngle >= 135) {
 			// Facing Left
-			this.width = 12;
-			this.height = 16;
-			this.frameOffset.x = 0;
-			this.frameOffset.y = 0;
-			this.frame.y = 2;
+			if (this.moveUp || this.moveLeft || this.moveDown) {
+				this.forwardCycle = true;
+				this.width = 14;
+				this.height = 17;
+				this.frameOffset.x = -1;
+				this.frameOffset.y = -4;
+				this.frame.y = 7;	
+			
+			} else if (this.moveRight) {	
+				this.width = 14;
+				this.height = 17;
+				this.frameOffset.x = -1;
+				this.frameOffset.y = -4;
+				this.frame.y = 7;	
+				this.forwardCycle = false;
+
+			} else {
+				this.forwardCycle = true;
+				this.width = 12;
+				this.height = 16;
+				this.frameOffset.x = 0;
+				this.frameOffset.y = 0;
+				this.frame.y = 2;
+			};
 
 		} else if (cursorAngle < 135 && cursorAngle >= 45) {
 			// Facing Down
@@ -57,18 +79,6 @@ export class Entity {
 	};
 	
 	movement() {
-		// Delays the sprite animation cycle.
-		// Reference Link: (https://stackoverflow.com/questions/69059989/how-do-i-slowdown-my-sprite-animation-in-javascript-canvas)
-		// Found in the verified solution.  
-		if (this.animationDelay > 0) {
-			this.animationDelay--;
-		} else {
-			this.frame.x = (this.frame.x + 1) % 6;
-			this.animationDelay = 1.25;
-		};
-
-		// Keep needing to specifiy the width since
-		// the players sprite in each row is different.
 		if (this.moveUp) {
 			this.y -= this.velocity.y;
 		};

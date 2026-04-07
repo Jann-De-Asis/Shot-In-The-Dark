@@ -398,6 +398,11 @@ function scalingCanvas(width, height) {
 	return canvas;
 };	
 
+/*
+function toggleDarkMode() {
+	isDarkMode = !isDarkMode // Toggle
+};
+*/
 
 function randint(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;

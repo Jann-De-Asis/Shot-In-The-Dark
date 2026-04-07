@@ -38,6 +38,18 @@ function drawingPlayerSprite(ctx, player) {
 	ctx.drawImage(playerSprite,
 		(player.frame.x*player.width) + player.frameOffset.x,  (player.frame.y*player.height) + player.frameOffset.y, player.width, player.height,
 		player.x, player.y, player.width * player.spriteScale, player.height * player.spriteScale);	
+	/*
+	Displays and delays the sprite animation cycle.
+	Reference Link: (https://stackoverflow.com/questions/69059989/how-do-i-slowdown-my-sprite-animation-in-javascript-canvas)
+	- Found in the verified solution.  
+	*/
+	if (player.animationDelay > 0) {
+		player.animationDelay--;
+	} else {
+		player.forwardCycle ? 
+		(player.frame.x = (player.frame.x+1) % 6) : (player.frame.x = ((player.frame.x+6)-1) % 6);
+		player.animationDelay = 1.25;
+	};
 };
 
 
