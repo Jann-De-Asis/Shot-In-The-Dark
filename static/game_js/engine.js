@@ -4,16 +4,19 @@ Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 - Timestamp: 2:36 
 */
 import { Projectile } from "./classes/projectiles.js";
-import { Bar, Button } from "./classes/user_interface.js";
-import { Entity } from  "./classes/entities.js";
-import { Firearm } from  "./classes/items.js";
 
-import { assetLoading, drawingTileset, drawingPlayerSprite } from "./assets.js";
+import { assetLoading, user, villageMap, 
+	 fullscreenButton, ammunitionBar
+       } from "./initialise.js";
 
-document.addEventListener("DOMContentLoaded", init, false);
+import { layers } from "./map_values.js";
+
+export { canvas };
 
 let canvas;
 let ctx;
+
+document.addEventListener("DOMContentLoaded", init, false);
 
 
 function init() {
@@ -27,87 +30,21 @@ function init() {
 	canvas.addEventListener("mousemove", cursorPosition, false);
 
 	document.addEventListener("fullscreenchange", exitFullscreen, false);
-
-	// (Make a some sort of place to run all the 
-	// class objects rather than stuffing it all here.)
 	
-	entities.push(
-		player = new Entity({
-			position: {
-				x: canvas.width / 2,
-				y: canvas.height / 2
-			},
-			size: {
-				width: 13,
-				height: 16
-			},
-			framePosition: {
-				x: 0,
-				y: 0
-			},
-			frameOffset: {
-				x: 0,
-				y: 0
-			},
-			spriteScale: 3,
-			
-			player: {
-				velocity: {
-					x: 5,
-					y: 5
-				},
-				ammunition: 3,
-				equip: new Firearm({
-					type: "glock19",
-					magazineType: "9mm",
-					maxCapacity: 15,
-					capacity: 15
-				})
-			
-			}
-		})
-	);
+	entities.push(user);
 
-	buttons.push(
-		fullscreenButton = new Button({
-					x: {
-						canvasWidth: canvas.width,
-						difference: 20
-					}, 
-					y: {
-						canvasHeight: 0,
-						difference: 10
-					},  
-					width: 10, 
-					height: 10, 
-					colour: "gray",
-					})
-	);
+	buttons.push(fullscreenBar);
 
-	bars.push (
-		ammunitionBar = new Bar({
-			x: {
-				canvasWidth: 0,
-				difference: 140
-			}, 
-			y: {
-				canvasHeight: canvas.height,
-				difference: 20
-			},  
-			width: 0,
-			height: 15,
-			colour: "yellow",
+	bars.push (ammunitionBar);
 
-		})
-	);
-
+	drawingTileset(ctx);
+	
 	assetLoading(animate);
 };
 
 // Framerate 
 const fpsInterval = 1000 / 30;
 let then = Date.now();
-
 
 // Change the lists into dictionaries and have the objects in that list. 
 // Pre-define that list since nothing new is ever going to change.
@@ -120,11 +57,6 @@ let projectiles = {
 	enemyProjectiles: []
 };
 
-// All unique objects.
-let player; 
-
-let fullscreenButton;
-let ammunitionBar;
 
 function animate() {
 	window.requestAnimationFrame(animate);
@@ -152,21 +84,13 @@ function animate() {
 
 	ctx.imageSmoothingEnabled = false;
 	
-	drawingTileset(ctx);
+	drawingSprite(user);
 
-	drawingPlayerSprite(ctx, player);
-
-	console.log(player.player.velocity.x);
-
-	player.movement();
-	player.animation(cursorAngle(cursorPos));
+	user.movement();
+	user.animation(cursorAngle(cursorPos));
 	
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
-	for (let i = (entities.length - 1); i >= 0; i--) {
-		entities[i];
-	};
-
 	for (let projectileType in projectiles) {
 		for (let i = (projectiles[projectileType].length - 1); i >= 0; i--) {
 			projectiles[projectileType][i].project(ctx);
@@ -194,47 +118,72 @@ function animate() {
 	ctx.fillText("Ammo: " + player.ammunition, 10, canvas.height - 10)
 };
 
-let mousekey
+// IMAGES
+
+function drawingSprite(entity) {
+	ctx.drawImage(entity.sprite.image,
+		(player.framePosition.x*player.size.width)+player.frameOffset.x,  (player.framePosition.y*player.size.height)+player.frameOffset.y, entity.width,
+		entity.position.x, entity.position.y, entity.width * entity.sprite.spriteScale, entity.height *  entity.sprite.spriteScale);	
+	/*
+	Displays and delays the sprite animation cycle.
+	Reference Link: (https://stackoverflow.com/questions/69059989/how-do-i-slowdown-my-sprite-animation-in-javascript-canvas)
+	- Found in the verified solution.  
+	*/
+	if (player.animationDelay > 0) {
+		player.animationDelay--;
+	} else {
+		player.forwardCycle ? 
+		(player.framePosition.x = (player.framePosition.x+1) % 6) : (player.framePosition.x = ((player.framePosition.x+6)-1) % 6);
+		player.animationDelay = 1.25;
+	};
+};
+
+
+function drawingTileset(map, layers) {
+	const tilesPerRow = 24;
+	const tileSize = 16;
+	const tileScale = 2;
+
+	// Background values were created using an application called: "Tiled"
+	// and reformated using a basic python script.
+	// Reference Link: (https://www.mapeditor.org/)
+	for (const layer in layers) {
+		for (let row = 0; row < layers[layer].length; row += 1) {
+			for (let col = 0; col < layers[layer][row].length; col += 1) {
+				const tile = layers[layer][row][col];
+				if (tile >= 0) {
+					const tileRow = Math.floor(tile / tilesPerRow)
+					const tileCol = Math.floor(tile % tilesPerRow);
+					ctx.drawImage(map,
+						tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
+						(col*tileSize) * tileScale, (row*tileSize) * tileScale, tileSize * tileScale, tileSize * tileScale);
+				};
+			};
+		};
+	};
+};
+
 
 function activate(event) {
 	let key = event.key.toLowerCase();
 
-	mousekey = key;
-
 	if (key === "shift") {	
-		player.velocity.x = player.velocity.x * player.sprintIncrease;
-		player.velocity.y = player.velocity.y * player.sprintIncrease;
+		user.velocity.x = user.velocity.x * user.sprintIncrease;
+		user.velocity.y = user.velocity.y * user.sprintIncrease;
 	};
 
-
-
 	if (key === "w") {	
-		player.moveUp = true;
+		user.moveUp = true;
 
 	} else if (key === "a") {
-		/*
-		player.width = 14;
-		player.height = 17;
-		player.frameOffset.x = -1;
-		player.frameOffset.y = -4;
-		player.frame.y = 7;
-		*/
-
-		player.moveLeft = true;
+		user.moveLeft = true;
 	
 	} else if (key === "s") {
-		player.moveDown = true;
+		user.moveDown = true;
 
 	} else if (key === "d") {
-		/*
-		player.width = 14;
-		player.height = 17;
-		player.frameOffset.x = -1;
-		player.frameOffset.y = -4;
-		player.frame.y = 5;
-		*/
-
-		player.moveRight = true;
+		user.moveRight = true;
+	
 	};
 };
 
@@ -243,38 +192,27 @@ function deactivate(event) {
 	let key = event.key.toLowerCase();	
 	
 	if (key === "shift") {
-		player.velocity.x = player.velocity.x / player.sprintIncrease;
-		player.velocity.y = player.velocity.y / player.sprintIncrease;
+		user.velocity.x = user.velocity.x / user.sprintIncrease;
+		user.velocity.y = user.velocity.y / user.sprintIncrease;
 	};
 	
-	/*
-	if (player.frame.y === 2) {
-		console.log("working2");
-		player.width = 12;
-		player.height = 16;
-		player.frameOffset.x = 0;
-		player.frameOffset.y = 0;
-		player.frame.y = 2;
-	}
-	*/
-
 	if (key === "w") {	
-		player.moveUp = false;
+		user.moveUp = false;
 	
 	} else if (key === "a") {
-		player.moveLeft = false;
+		user.moveLeft = false;
 	
 	} else if (key === "s") {
-		player.moveDown = false;
+		user.moveDown = false;
 
 	} else if (key === "d") {
-		player.moveRight = false;
+		user.moveRight = false;
 	};
 	
 	if (key === "r") {
-		if (player.ammunition !== 0) {
-			player.ammunition--;
-			player.equip.capacity = player.equip.maxCapacity;
+		if (user.ammunition !== 0) {
+			user.ammunition--;
+			user.equip.capacity = user.equip.maxCapacity;
 		};
 	};
 };
@@ -367,42 +305,33 @@ function cursorPosition(event) {
 };
 
 
-function cursorAngle(cursorPos) {
-		/*
-		'cursorPos' is set to 'undefined' until the mouse moves. Therefore,
-		the default case will be set to be facing down (i.e. 90 degrees) using 
-		a ternary operator.
-		Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator) 
-		*/
-		return cursorPos === undefined ? 90: Math.atan2(
-				cursorPos.y - (player.y + (player.height/2)*player.spriteScale), 
-				cursorPos.x - (player.x + (player.width/2)*player.spriteScale) 
-				) * 180 / Math.PI;
-		// (Note: atan2() has been changed to degrees!)
-};
-
 
 // MISCELLANEOUS
 
-/*
-Scaling the canvas based on new sizes while adapting for high-DPI displays.
-Reference Link (https://www.xjavascript.com/blog/how-do-i-fix-blurry-text-in-my-html5-canvas/)
-- Section 2.2 in Table of Contents
-*/
-
-// Potentially broken and redundant...
-
-// let ratio = window.devicePixelRatio;
 let scale = false;
 
-function scalingCanvas(width, height) {
 
+function scalingCanvas(width, height) {
 	canvas.width = width;
 	canvas.height = height;
-	// ctx.scale(ratio, ratio);
 	
 	return canvas;
 };	
+
+
+function cursorAngle(cursorPos) {
+	/*
+	'cursorPos' is set to 'undefined' until the mouse moves. Therefore,
+	the default case will be set to be facing down (i.e. 90 degrees) using 
+	a ternary operator.
+	Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator) 
+	*/
+	return cursorPos === undefined ? 90 : Math.atan2(
+			cursorPos.y - (player.y + (player.height/2)*player.spriteScale), 
+			cursorPos.x - (player.x + (player.width/2)*player.spriteScale) 
+			) * 180 / Math.PI;
+	// (Note: atan2() has been changed to degrees!)
+};
 
 /*
 function toggleDarkMode() {
