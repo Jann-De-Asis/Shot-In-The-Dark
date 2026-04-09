@@ -11,7 +11,6 @@ import { assetLoading, user, villageMap,
 
 import { layers } from "./map_values.js";
 
-export { canvas };
 
 let canvas;
 let ctx;

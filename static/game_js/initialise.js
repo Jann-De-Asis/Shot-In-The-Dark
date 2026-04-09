@@ -2,8 +2,6 @@ import { Player } from  "./classes/entities.js";
 import { Firearm } from  "./classes/items.js";
 import { Bar, Button } from "./classes/user_interface.js";
 
-import { canvas } from "./engine.js";
-
 export { assetLoading, user, villageMap, fullscreenButton, ammunitionBar};
 
 let user = new Player({
@@ -85,22 +83,22 @@ const playerSprite = {
 		width: 12,
 		height: 16
 	},
-	movingUp: {
+	moveUp: {
 		image: new Image(),
 		width: 13,
 		height: 17
 	},
-	movingLeft: {
+	moveLeft: {
 		image: new Image(),
 		width: 14,
 		height: 17
 	},
-	movingDown: {
+	moveDown: {
 		image: new Image(),
 		width: 13,
 		height: 17
 	},
-	movingRight: {
+	moveRight: {
 		image: new Image(),
 		width: 14,
 		height: 17
@@ -136,10 +134,10 @@ function assetLoading(animate) {
 		{ "var": playerSprite['idleLeft']['image'], "url": "/static/game_images/player_sprites/idle_left.png" },
 		{ "var": playerSprite['idleDown']['image'], "url": "/static/game_images/player_sprites/idle_down.png" },
 		{ "var": playerSprite['idleRight']['image'], "url": "/static/game_images/player_sprites/idle_right.png" }
-		/*{ "var": playerSprite['movingUp']['image'], "url": "/static/game_images/player_sprites/moving_up" },
-		{ "var": playerSprite['movingLeft']['image'], "url": "/static/game_images/player_sprites/moving_left" },
-		{ "var": playerSprite['movingDown']['image'], "url": "/static/game_images/player_sprites/moving_down" },
-		{ "var": playerSprite['movingRight']['image'], "url": "/static/game_images/player_sprites/moving_right" }*/
+		{ "var": playerSprite['moveUp']['image'], "url": "/static/game_images/player_sprites/move_up.png" },
+		{ "var": playerSprite['moveLeft']['image'], "url": "/static/game_images/player_sprites/move_left.png" },
+		{ "var": playerSprite['moveDown']['image'], "url": "/static/game_images/player_sprites/move_down.png" },
+		{ "var": playerSprite['moveRight']['image'], "url": "/static/game_images/player_sprites/move_right.png" }
 	], animate);
 };
 
