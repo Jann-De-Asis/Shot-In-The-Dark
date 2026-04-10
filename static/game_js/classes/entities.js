@@ -9,7 +9,8 @@ export { Player, Enemy };
 
 
 class Entity {
-	constructor({sprite, width, height, position, velocity}) {
+	constructor({asset, sprite, width, height, position, velocity}) {
+		this.asset = asset;
 		this.sprite = sprite;
 		
 		this.width = width;
@@ -55,9 +56,9 @@ class Player extends Entity {
 		this.equip = equip;
 		
 		this.sprintIncrease = 2; // Mutliplied
+	
+		super.movement();
 	};
-
-	super.movement();
 	
 	animation(cursorAngle) {	
 		// Entity's attributes must be updated every direction
