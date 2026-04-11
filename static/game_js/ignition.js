@@ -2,10 +2,10 @@ import { Player } from  "./classes/entities.js";
 import { Firearm } from  "./classes/items.js";
 import { Bar, Button } from "./classes/user_interface.js";
 
-import { initiating } from "./engine.js"; 
-
 // (This will also change based on what is selected.)
 import { layers } from "./map_values.js";
+
+export { * };
 
 // (This will be removed when a start-up menu is incorperated.)
 document.addEventListener("DOMContentLoaded", init, false);
@@ -15,8 +15,6 @@ function init() {
 	let canvas = document.querySelector("canvas");
 	let ctx = canvas.getContext("2d");
 	
-	// (Upon adding different sprites, this will be changed based on selection.
-	//  I.e. all of this code will be gone.)
 	const playerSprite = {
 		scale: 3,
 		// Entity's attributes must be updated every direction
@@ -63,9 +61,6 @@ function init() {
 		}
 	};
 
-
-	// (Upon adding different maps, this will be changed based on selection.
-	//  I.e. all of this code will be gone.)
 	const villageMap = {
 		image: new Image(),
 		startingPosition: {
@@ -138,7 +133,7 @@ function init() {
 	
 	assetLoading(initiating(canvas, ctx, user, fullscreenButton, ammunitionBar));
 	
-	function assetLoading(initiating) {
+	function assetLoading(animate) {
 
 		function renderingAsset(assets, callback) {
 			let num_assets = assets.length;
