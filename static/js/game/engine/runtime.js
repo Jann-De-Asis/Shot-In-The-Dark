@@ -6,6 +6,7 @@ Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 import { Projectile } from "./classes/projectiles.js";
 import { canvas, ctx } from "./ignition.js";
 
+export { animatingGame };
 // Change the lists into dictionaries and have the objects in that list. 
 // Pre-define that list since nothing new is ever going to change.
 let buttons = [];
@@ -16,13 +17,15 @@ let projectiles = {
 	enemyProjectiles: []
 };
 
+let scale = false;
+
 // Framerate 
 const fpsInterval = 1000 / 30;
 let then = Date.now();
 
 
-function animating() {
-	window.requestAnimationFrame(animating);
+function animatingGame() {
+	window.requestAnimationFrame(animatingGame);
 
 	// Manages the frames per second (fps) 
 	// through the denominator of 'fpsInterval'.

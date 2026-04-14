@@ -1,19 +1,19 @@
-import { canvas } from "./../start/main.js";
+// import { canvas } from "./../start/main.js";
 
-export { * };
+export { renderingAssets, drawingMap, playerSprites, /*villageSprite*/ };
 
 
-function renderingAsset(assets, callback) {
+function renderingAssets(assets /*, callback*/) {	
 	let numAssets = assets.length;
 	const loaded = function () {
 		numAssets = numAssets - 1;
 		if (numAssets === 0) {
-			callback();
+			// callback();
 		};
 	};
 
 	for (const asset of assets) {
-		const element = asset.var;
+		const element = asset.container;
 		if (element instanceof HTMLImageElement) {
 			element.addEventListener("load", loaded, false);
 		} else if (element instanceof HTMLAudioElement) {
@@ -104,12 +104,13 @@ const playerSprites = {
 	}
 };
 
-const villageMap = {
+/*
+const villageSprite = {
 	image: new Image(),
 	url: "/static/assets/game/images/village_tileset.png", 
 	startingPosition: {
 		x: canvas.width / 2,
 		y: canvas.height / 2
-	};
+	}
 };
-
+*/

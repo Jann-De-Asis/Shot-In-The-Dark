@@ -1,39 +1,34 @@
-import { Player } from  "./classes/entities.js";
-import { Firearm } from  "./classes/items.js";
-import { Bar, Button } from "./classes/interface.js";
+import { Player } from  "./../classes/entities.js";
+import { Firearm } from  "./../classes/items.js";
+import { Bar, Button } from "./../classes/interface.js";
 
-import { renderingAssets, drawingMap, villageMap, playerSprites} from "./../assets/render.js";  
-import { layers } from "./village_data.js";
+/* import { animating } from "./runtime.js"; */
 
-export { canvas, ctx, player, fullscreenButton, ammunitionBar };
+import {renderingAssets, drawingMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
+// import layers from "./../assets/village_data.js";
 
-// (This will be removed when a start-up menu is incorperated.)
-document.addEventListener("DOMContentLoaded", init, false);
+export { compilingGame as default };
 
 
-function init() {
-	// Made in the case where the map or player's sprite could change.
-	renderingAsset([
-		{ "var": villageMap['image'], "url": villageMap['url']  },
-		
-		{ "var": playerSprite['idleUp']['image'], "url": playerSprite['idleUp']['url'] },
-		{ "var": playerSprite['idleLeft']['image'], "url": playerSprite['idleLeft']['url'] },
-		{ "var": playerSprite['idleDown']['image'], "url": playerSprite['idleDown']['url'] },
-		{ "var": playerSprite['idleRight']['image'], "url": playerSprite['idleRight']['url'] },
-		{ "var": playerSprite['moveUp']['image'], "url": playerSprite['moveUp']['url'] },
-		{ "var": playerSprite['moveLeft']['image'], "url": playerSprite['moveLeft']['url'] },
-		{ "var": playerSprite['moveDown']['image'], "url": playerSprite['moveDown']['url']  },
-		{ "var": playerSprite['moveRight']['image'], "url": playerSprite['moveRight']['url'] }
-	], animating); // (Check this again from the lectures!)
+function compilingGame() {
+	// Made in the case where more unique sprites could be added to the character.
+	let sprites = [];
 	
-	let canvas = document.querySelector("canvas");
-	let ctx = canvas.getContext("2d");
+	for (let sprite in playerSprites) {
+		sprites.push({"container": playerSprites[sprite]['image'], "url": playerSprites[sprite]['url']});
+	};
+	
+	// sprites.push({ "var": villageMap['image'], "url": villageMap['url']  })
+
+	renderingAssets(sprites)
+
+	/*
 	
 	let player = new Player({
-			asset: playerSprite,
+			asset: playerSpritess,
 			sprite: {
 				frame: 0,
-				image: playerSprite.idleRight.image
+				/mage: playerSpritess.idleRight.image
 			},
 
 			width: 13,
@@ -89,4 +84,5 @@ function init() {
 	});
 		
 	drawingMap(villageMap, layers);
+	*/
 };
