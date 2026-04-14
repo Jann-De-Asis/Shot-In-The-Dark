@@ -165,3 +165,42 @@ function deactivatingKey(event) {
 		};
 	};
 };
+
+
+const velocity = {
+	x: Math.cos(angle) * 50,
+	y: Math.sin(angle) * 50
+};
+
+
+if (fullscreenButton.isInside(clickPos, fullscreenButton)) {
+	// The 'toggleFullscreen' method returns 
+	// either true or false for scale.
+	scale = fullscreenButton.toggleFullscreen(canvas);
+};
+
+for (let button of buttons) {
+	if (button.isInside(cursorPos, button)) {
+		button.colour = "brown";
+	} else {
+		button.colour = "gray";
+	};
+};
+
+// Left-mouse button
+if (event.button === 0) {
+			
+if (user.equip.capacity !== 0) {
+	projectiles.userProjectiles.push(
+				new Projectile({
+					x: (user.position.x + ((user.width/2)*user.sprite.scale) - 5), 
+					y: (user.position.y + ((user.height/2)*user.sprite.scale) - 5), 
+					width: 10,
+					height: 10,
+					colour: "yellow",
+					velocity
+				})
+	);
+
+	user.equip.capacity -= 1;
+};

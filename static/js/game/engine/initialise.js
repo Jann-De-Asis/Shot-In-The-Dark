@@ -1,10 +1,9 @@
 import { Player } from  "./classes/entities.js";
 import { Firearm } from  "./classes/items.js";
-import { Bar, Button } from "./classes/user_interface.js";
+import { Bar, Button } from "./classes/interface.js";
 
-
-// (This will also change based on what is selected.)
-import { layers } from "./map_values.js";
+import { renderingAssets, drawingMap, villageMap, playerSprites} from "./../assets/render.js";  
+import { layers } from "./village_data.js";
 
 export { canvas, ctx, player, fullscreenButton, ammunitionBar };
 
@@ -13,6 +12,20 @@ document.addEventListener("DOMContentLoaded", init, false);
 
 
 function init() {
+	// Made in the case where the map or player's sprite could change.
+	renderingAsset([
+		{ "var": villageMap['image'], "url": villageMap['url']  },
+		
+		{ "var": playerSprite['idleUp']['image'], "url": playerSprite['idleUp']['url'] },
+		{ "var": playerSprite['idleLeft']['image'], "url": playerSprite['idleLeft']['url'] },
+		{ "var": playerSprite['idleDown']['image'], "url": playerSprite['idleDown']['url'] },
+		{ "var": playerSprite['idleRight']['image'], "url": playerSprite['idleRight']['url'] },
+		{ "var": playerSprite['moveUp']['image'], "url": playerSprite['moveUp']['url'] },
+		{ "var": playerSprite['moveLeft']['image'], "url": playerSprite['moveLeft']['url'] },
+		{ "var": playerSprite['moveDown']['image'], "url": playerSprite['moveDown']['url']  },
+		{ "var": playerSprite['moveRight']['image'], "url": playerSprite['moveRight']['url'] }
+	], animating); // (Check this again from the lectures!)
+	
 	let canvas = document.querySelector("canvas");
 	let ctx = canvas.getContext("2d");
 	
@@ -74,8 +87,6 @@ function init() {
 				colour: "yellow",
 
 	});
-
-	
-	drawingTileset(villageMap);
-	};
+		
+	drawingMap(villageMap, layers);
 };

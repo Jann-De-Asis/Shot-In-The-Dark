@@ -9,15 +9,17 @@ export { Player, Enemy };
 
 
 class Entity {
-	constructor({asset, sprite, width, height, position, velocity}) {
+	constructor({asset, sprite, scale, width, height, position, velocity}) {
 		this.asset = asset;
 		this.sprite = sprite;
+		this.scale = scale;
 		
 		this.width = width;
 		this.height = height;
 	
 		this.position = position;
 		this.velocity = velocity;
+		
 		this.moveUp = false;
 		this.moveLeft = false;
 		this.moveDown = false;

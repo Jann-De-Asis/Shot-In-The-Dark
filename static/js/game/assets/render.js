@@ -1,12 +1,13 @@
-// (This is where the sprite values are kept.)
-export { playerSprite, villageMap };
+import { canvas } from "./../start/main.js";
+
+export { * };
 
 
 function renderingAsset(assets, callback) {
-	let num_assets = assets.length;
+	let numAssets = assets.length;
 	const loaded = function () {
-		num_assets = num_assets - 1;
-		if (num_assets === 0) {
+		numAssets = numAssets - 1;
+		if (numAssets === 0) {
 			callback();
 		};
 	};
@@ -23,22 +24,24 @@ function renderingAsset(assets, callback) {
 };
 
 
-function drawingTileset(map, layers) {
+function drawingMap(image, layers) {
 	const tilesPerRow = 24;
 	const tileSize = 16;
 	const tileScale = 2;
 
-	// Background values were created using an application called: "Tiled"
-	// and reformated using a basic python script.
-	// Reference Link: (https://www.mapeditor.org/)
+	/*
+	Background values were created using an application called: "Tiled"
+	and reformated using self-made python script.
+	- Reference Link: (https://www.mapeditor.org/)
+	*/
 	for (const layer in layers) {
-		for (let row = 0; row < layers[layer].length; row += 1) {
-			for (let col = 0; col < layers[layer][row].length; col += 1) {
+		for (let row = 0; row < (layers[layer].length); row += 1) {
+			for (let col = 0; col < (layers[layer][row].length); col += 1) {
 				const tile = layers[layer][row][col];
 				if (tile >= 0) {
 					const tileRow = Math.floor(tile / tilesPerRow)
 					const tileCol = Math.floor(tile % tilesPerRow);
-					ctx.drawImage(map,
+					ctx.drawImage(image,
 						tileCol * tileSize, tileRow * tileSize, tileSize, tileSize,
 						(col*tileSize) * tileScale, (row*tileSize) * tileScale, tileSize * tileScale, tileSize * tileScale);
 				};
@@ -47,47 +50,55 @@ function drawingTileset(map, layers) {
 	};
 };
 
-const playerSprite = {
-	scale: 3,
+
+const playerSprites = {
 	// Entity's attributes must be updated every direction
 	// to account for the difference in the sprite sheet.	
 	idleUp: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/idle_up.png", 
 		width: 13,
 		height: 16
 	},
 	idleLeft: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/idle_left.png", 
 		width: 12,
 		height: 16
 	},
 	idleDown: { 	
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/idle_down.png", 
 		width: 13,
 		height: 16
 	},
 	idleRight: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/idle_right.png", 
 		width: 12,
 		height: 16
 	},
 	moveUp: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/move_up.png",
 		width: 13,
 		height: 17
 	},
 	moveLeft: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/move_left.png", 
 		width: 14,
 		height: 17
 	},
 	moveDown: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/move_down.png", 
 		width: 13,
 		height: 17
 	},
 	moveRight: {
 		image: new Image(),
+		url: "/static/assets/game/images/player_sprites/move_right.png",
 		width: 14,
 		height: 17
 	}
@@ -95,20 +106,10 @@ const playerSprite = {
 
 const villageMap = {
 	image: new Image(),
+	url: "/static/assets/game/images/village_tileset.png", 
 	startingPosition: {
-			x: canvas.width / 2,
-			y: canvas.height / 2
-		}
+		x: canvas.width / 2,
+		y: canvas.height / 2
+	};
 };
 
-renderingAsset([
-	{ "var": villageMap['image'], "url": "/static/game_images/environment_tileset.png" },
-	{ "var": playerSprite['idleUp']['image'], "url": "/static/game_images/player_sprites/idle_up.png" },
-	{ "var": playerSprite['idleLeft']['image'], "url": "/static/game_images/player_sprites/idle_left.png" },
-	{ "var": playerSprite['idleDown']['image'], "url": "/static/game_images/player_sprites/idle_down.png" },
-	{ "var": playerSprite['idleRight']['image'], "url": "/static/game_images/player_sprites/idle_right.png" },
-	{ "var": playerSprite['moveUp']['image'], "url": "/static/game_images/player_sprites/move_up.png" },
-	{ "var": playerSprite['moveLeft']['image'], "url": "/static/game_images/player_sprites/move_left.png" },
-	{ "var": playerSprite['moveDown']['image'], "url": "/static/game_images/player_sprites/move_down.png" },
-	{ "var": playerSprite['moveRight']['image'], "url": "/static/game_images/player_sprites/move_right.png" }
-]);
