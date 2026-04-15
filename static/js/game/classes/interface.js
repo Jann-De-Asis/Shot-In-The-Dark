@@ -27,12 +27,11 @@ class Button {
 		if (this.text !== undefined) {
 			ctx.textBaseline = "top";
 			
-			ctx.font = this.height + "px serif";	
+			ctx.font = this.height + "px serif";
 			ctx.fillStyle = this.textColour;
 			ctx.fillText(this.text, this.x, this.y);
 			
-			this.width = ctx.measureText(this.text).width;
-			console.log(this.width)
+			console.log(this.width = ctx.measureText(this.text).width);
 		};
 		
 	};

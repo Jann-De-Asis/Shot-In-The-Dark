@@ -4,11 +4,12 @@ the program.
 
 NOTE: functions with events as parametres can only be used through eventlisteners.
 */
-import { canvas } from "./start/main.js";
+import ctx, { canvas } from "./start/main.js";
 
 export { 
 	fetchingClickPosition, fetchingPlayerToClickAngle, 
-	fetchingCursorPosition, fetchingPlayerToCursorAngle
+	fetchingCursorPosition, fetchingPlayerToCursorAngle,
+	fetchingTextWidth
 };
 
 
@@ -95,6 +96,10 @@ function exitingFullscreen() {
 };
 
 
+function fetchingTextWidth(text, size, font) {
+	ctx.font = size + "px " + font;
+	return ctx.measureText(text).width
+};
 
 
 /*

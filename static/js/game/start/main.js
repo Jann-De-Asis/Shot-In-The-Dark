@@ -2,6 +2,7 @@
 import { Button } from "./../classes/interface.js";
 
 import animatingMenu, { clicking } from "./menu.js";
+import { fetchingTextWidth } from "./../utilities.js";
 
 export { context as default, canvas, playButton };
 
@@ -21,7 +22,7 @@ function init() {
 		x: canvas.width / 2,
 		y: canvas.height / 2,
 		offset: {
-			x: 35.5, 
+			x: 0, 
 			y: 0
 		},
 		
@@ -35,10 +36,9 @@ function init() {
 		textColour: "white"
 	});
 
-	// Perhaps make a utility that gets the text width because
-	// this is ridiculous...
+	console.log(fetchingTextWidth("Play", 40, "serif"));	
 
 	console.info("Main menu successfully compiled.");	
-	
+
 	animatingMenu();
 };
