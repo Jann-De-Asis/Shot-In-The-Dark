@@ -1,11 +1,13 @@
 // import { canvas } from "./../start/main.js";
 
-export { renderingAssets, drawingMap, playerSprites, /*villageSprite*/ };
+export { renderingAssets, renderingFont, drawingMap, 
+	playerSprites, /*villageSprite*/ pixelFont };
 
 
 function renderingAssets(assets /*, callback*/) {	
 	let numAssets = assets.length;
 	const loaded = function () {
+		console.info("Asset successfully rendered");
 		numAssets = numAssets - 1;
 		if (numAssets === 0) {
 			// callback();
@@ -21,6 +23,24 @@ function renderingAssets(assets /*, callback*/) {
 		};
 		element.src = asset.url;
 	};
+};
+
+/* 
+Rendering fonts separately since they are not elements and have no event listener.
+- Reference Link: (https://www.w3tutorials.net/blog/how-can-i-use-custom-fonts-in-an-html5-canvas-element/#core-concepts-font-loading-and-canvas-text-apis)
+- Found in 'Step 1: Loading Custom Fonts Reliably', '3.2 Programmatic Loading with the FontFace API'.
+- Reference Link: (https://developer.mozilla.org/en-US/docs/Web/API/FontFace)
+- Found in 'Examples'
+- Reference Link: (https://youtu.be/fRRRkognpOs?si=OAbIUpXBSDWZPRCT)
+*/
+function renderingFont(font) {
+	font.load().then(
+		(loadedFont) => {
+  			// Add the font to the document's font set
+  			document.fonts.add(loadedFont);
+  			console.info("Font successful rendered");
+		}
+	);
 };
 
 
@@ -50,6 +70,8 @@ function drawingMap(image, layers) {
 	};
 };
 
+
+const pixelFont = new FontFace("pixel", "url(/static/assets/game/images/arcade_pixel_font.ttf)");
 
 const playerSprites = {
 	// Entity's attributes must be updated every direction

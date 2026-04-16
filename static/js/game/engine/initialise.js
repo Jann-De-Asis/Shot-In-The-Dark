@@ -4,7 +4,7 @@ import { Bar, Button } from "./../classes/interface.js";
 
 /* import { animating } from "./runtime.js"; */
 
-import {renderingAssets, drawingMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
+import { renderingAssets, drawingMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
 // import layers from "./../assets/village_data.js";
 
 export { compilingGame as default };

@@ -97,8 +97,15 @@ function exitingFullscreen() {
 
 
 function fetchingTextWidth(text, size, font) {
+	
+	/* 
+	Getting the exact measurements of the box around the text.
+	- Reference Link: (https://stackoverflow.com/questions/18900117/write-text-on-canvas-with-background)
+	- Found in verified solution
+	*/
 	ctx.font = size + "px " + font;
-	return ctx.measureText(text).width
+	console.log(ctx.measureText(text).width);
+	return ctx.measureText(text).width;
 };
 
 

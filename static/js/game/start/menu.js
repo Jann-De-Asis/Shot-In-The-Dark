@@ -2,7 +2,7 @@
 // This is where play, settings, how-to-play is kept.)
 import ctx, { canvas, playButton } from "./main.js";
 
-import { fetchingClickPosition } from "./../utilities.js";
+import { fetchingClickPosition, fetchingTextWidth } from "./../utilities.js";
 
 import compilingGame from "./../engine/initialise.js";
 

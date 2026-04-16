@@ -1,7 +1,7 @@
-export {Button, Bar};
+export { Button, Bar };
 
 class Button {
-	constructor({x, y, offset, width, height, colour, text, textColour}) {
+	constructor({x, y, offset, width, height, colour, text, font, textColour}) {
 		this.x = x - offset.x;
 		this.y = y - offset.y;
 		this.offset = offset;
@@ -12,6 +12,7 @@ class Button {
 		this.colour = colour;
 		
 		this.text = text;
+		this.font = font;
 		this.textColour = textColour;
 	};
 
@@ -19,19 +20,13 @@ class Button {
 		ctx.fillStyle = this.colour;
                 ctx.fillRect(this.x, this.y, this.width, this.height);
 		
-		/* 
-		Getting the exact measurements of the box around the text.
-		- Reference Link: (https://stackoverflow.com/questions/18900117/write-text-on-canvas-with-background)
-		- Found in verified solution
-		*/
 		if (this.text !== undefined) {
 			ctx.textBaseline = "top";
 			
-			ctx.font = this.height + "px serif";
+			ctx.font = this.height + "px " + this.font;
+			console.log(ctx.measureText(this.text).width);
 			ctx.fillStyle = this.textColour;
 			ctx.fillText(this.text, this.x, this.y);
-			
-			console.log(this.width = ctx.measureText(this.text).width);
 		};
 		
 	};
