@@ -2,7 +2,7 @@
 // This is where play, settings, how-to-play is kept.)
 import ctx, { canvas, playButton } from "./main.js";
 
-import { fetchingClickPosition, fetchingTextWidth } from "./../utilities.js";
+import { fetchingClickPosition } from "./../utilities.js";
 
 import compilingGame from "./../engine/initialise.js";
 
@@ -25,7 +25,7 @@ function animatingMenu() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	playButton.drawing(ctx)
+	playButton.drawingBox(ctx);
 };
 
 

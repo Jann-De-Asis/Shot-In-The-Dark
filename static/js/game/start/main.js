@@ -1,6 +1,7 @@
 // The beginning point of the game's functionalities.
 import { Button } from "./../classes/interface.js";
-import { fetchingTextWidth } from "./../utilities.js";
+
+import { fetchingTextMeasurements } from "./../utilities.js";
 
 import animatingMenu, { clicking } from "./menu.js";
 
@@ -16,24 +17,30 @@ let context, canvas, playButton;
 
 function init() {			
 	
-	function declaring() {
+	function declaring() {	
+		const metrics = fetchingTextMeasurements("Play", 60, "pixel") ;
+
 		playButton = new Button({
 			x: canvas.width / 2,
 			y: canvas.height / 2,
 			offset: {
-				x: fetchingTextWidth("Play", 40, "pixel") / 2,
+				x: 0,//metrics.width / 2,
 				y: 0
 			},
 			
-			width: fetchingTextWidth("Play", 40, "pixel"),
-			height: 40,
+			width: metrics.width,
+			height: metrics.height,
 
 			colour: "black",
 
 			text: "Play",
+			textOffset: metrics.offset, 
+			textSize: 60,	
 			font: "pixel",
 			textColour: "white"
 		});
+
+		playButton.addingText(context, "Play", "pixel", 60, metrics.offset, "white")
 	};
 	
 	canvas = document.querySelector("canvas");
@@ -41,12 +48,10 @@ function init() {
 	
 	canvas.addEventListener("mousedown", clicking, false);
 	// canvas.addEventListener("mousemove", fetchingCursorPosition, false);
-	
-	renderingFont(pixelFont);
 
-	setTimeout(declaring, 10);
+	renderingFont(declaring, pixelFont);
 
 	console.info("Menu successfully compiled");	
 	
 	animatingMenu();
-};	
+};

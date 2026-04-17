@@ -1,7 +1,7 @@
 export { Button, Bar };
 
 class Button {
-	constructor({x, y, offset, width, height, colour, text, font, textColour}) {
+	constructor({x, y, offset, width, height, colour}) {
 		this.x = x - offset.x;
 		this.y = y - offset.y;
 		this.offset = offset;
@@ -9,26 +9,20 @@ class Button {
 		this.width = width;
 		this.height = height;
 		
-		this.colour = colour;
-		
-		this.text = text;
-		this.font = font;
-		this.textColour = textColour;
+		this.colour = colour;		
 	};
 
-	drawing(ctx) {
+	drawingBox(ctx) {
 		ctx.fillStyle = this.colour;
-                ctx.fillRect(this.x, this.y, this.width, this.height);
+                ctx.fillRect(this.x, this.y, this.width, this.height);		
+	};
+
+	addingText(ctx, text, font, size, offset, colour) {
+		ctx.textBaseline = "top";
+		ctx.font = size + "px " + font;
 		
-		if (this.text !== undefined) {
-			ctx.textBaseline = "top";
-			
-			ctx.font = this.height + "px " + this.font;
-			console.log(ctx.measureText(this.text).width);
-			ctx.fillStyle = this.textColour;
-			ctx.fillText(this.text, this.x, this.y);
-		};
-		
+		ctx.fillStyle = colour;
+		ctx.fillText(text, this.x, this.y - offset);
 	};
 
 	checkingClick(click) {

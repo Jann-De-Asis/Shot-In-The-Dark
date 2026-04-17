@@ -9,7 +9,7 @@ import ctx, { canvas } from "./start/main.js";
 export { 
 	fetchingClickPosition, fetchingPlayerToClickAngle, 
 	fetchingCursorPosition, fetchingPlayerToCursorAngle,
-	fetchingTextWidth
+	fetchingTextMeasurements
 };
 
 
@@ -96,16 +96,25 @@ function exitingFullscreen() {
 };
 
 
-function fetchingTextWidth(text, size, font) {
-	
+function fetchingTextMeasurements(text, size, font) {	
 	/* 
 	Getting the exact measurements of the box around the text.
 	- Reference Link: (https://stackoverflow.com/questions/18900117/write-text-on-canvas-with-background)
 	- Found in verified solution
-	*/
+	*/	
 	ctx.font = size + "px " + font;
-	console.log(ctx.measureText(text).width);
-	return ctx.measureText(text).width;
+	
+	const metrics = ctx.measureText(text);
+	
+	const textWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
+	const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
+	const textOffset = ((metrics.fontBoundingBoxAscent+metrics.fontBoundingBoxDescent)-textHeight) / 2;
+
+	return {
+		offset: textOffset,
+		width: textWidth,
+		height: textHeight
+	};
 };
 
 

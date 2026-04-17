@@ -26,19 +26,26 @@ function renderingAssets(assets /*, callback*/) {
 };
 
 /* 
-Rendering fonts separately since they are not elements and have no event listener.
+Rendering fonts separately since they are not elements and have no event listeners. 
+As well, they are an asynchonous operation from the '.load()' method in which callbacks
+must be used to execute functions at the correct time.
+
 - Reference Link: (https://www.w3tutorials.net/blog/how-can-i-use-custom-fonts-in-an-html5-canvas-element/#core-concepts-font-loading-and-canvas-text-apis)
 - Found in 'Step 1: Loading Custom Fonts Reliably', '3.2 Programmatic Loading with the FontFace API'.
+
 - Reference Link: (https://developer.mozilla.org/en-US/docs/Web/API/FontFace)
 - Found in 'Examples'
-- Reference Link: (https://youtu.be/fRRRkognpOs?si=OAbIUpXBSDWZPRCT)
+
+- Reference Link: (https://youtu.be/i2SPq-nb3NQ?si=2jBwJCTKqCNnzwGL&t=140)
+- Timestamp: 2:20 
 */
-function renderingFont(font) {
+function renderingFont(callback, font) {
 	font.load().then(
-		(loadedFont) => {
-  			// Add the font to the document's font set
+		function(loadedFont) {
+			// Add the font to the document's font set
   			document.fonts.add(loadedFont);
   			console.info("Font successful rendered");
+			callback();
 		}
 	);
 };
