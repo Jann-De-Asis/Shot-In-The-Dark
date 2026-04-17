@@ -12,23 +12,29 @@ class Button {
 		this.colour = colour;		
 	};
 
-	drawingBox(ctx) {
+	static fetchingTextMeasurements(ctx, text, size, font) {	
+	};
+
+	drawing(ctx) {
 		ctx.fillStyle = this.colour;
                 ctx.fillRect(this.x, this.y, this.width, this.height);		
 	};
 
-	addingText(ctx, text, font, size, offset, colour) {
+	drawingWithText(ctx, {text, font, size, offset, colour}) {
+		ctx.fillStyle = this.colour;
+                ctx.fillRect(this.x, this.y, this.width, this.height);		
+
 		ctx.textBaseline = "top";
 		ctx.font = size + "px " + font;
 		
 		ctx.fillStyle = colour;
-		ctx.fillText(text, this.x, this.y - offset);
+		ctx.fillText(text, this.x - offset.x, this.y - offset.y);
 	};
 
-	checkingClick(click) {
+	checkingInside(position) {
 		return (
-			click.x >= this.x && click.x <= this.x+this.width 
-			&& click.y >= this.y && click.y <= this.y+this.height
+			position.x >= this.x && position.x <= this.x+this.width 
+			&& position.y >= this.y && position.y <= this.y+this.height
 		);
 	};
 

@@ -96,7 +96,7 @@ function exitingFullscreen() {
 };
 
 
-function fetchingTextMeasurements(text, size, font) {	
+function fetchingTextMeasurements(text, size, font, log=false) {	
 	/* 
 	Getting the exact measurements of the box around the text.
 	- Reference Link: (https://stackoverflow.com/questions/18900117/write-text-on-canvas-with-background)
@@ -105,15 +105,16 @@ function fetchingTextMeasurements(text, size, font) {
 	ctx.font = size + "px " + font;
 	
 	const metrics = ctx.measureText(text);
-	
-	const textWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
-	const textHeight = metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent;
-	const textOffset = ((metrics.fontBoundingBoxAscent+metrics.fontBoundingBoxDescent)-textHeight) / 2;
+		
+	if (log !== false) {
+		console.log(metrics);
+	};
 
 	return {
-		offset: textOffset,
-		width: textWidth,
-		height: textHeight
+		fullWidth: metrics.width,
+		fullHeight: metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent,
+		textWidth: metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight,
+		textHeight: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
 	};
 };
 

@@ -3,55 +3,47 @@ import { Button } from "./../classes/interface.js";
 
 import { fetchingTextMeasurements } from "./../utilities.js";
 
-import animatingMenu, { clicking } from "./menu.js";
+import animatingMenu, { clicking, hovering } from "./menu.js";
 
 import { renderingFont, pixelFont } from "./../assets/render.js";  
 
-export { context as default, canvas, playButton };
+export { context as default, canvas, playButton, playMetrics };
 
 
 document.addEventListener("DOMContentLoaded", init, false);
 
-let context, canvas, playButton;
+let context, canvas, playButton, playMetrics;
 
 
 function init() {			
 	
 	function declaring() {	
-		const metrics = fetchingTextMeasurements("Play", 60, "pixel") ;
+		playMetrics = fetchingTextMeasurements("Play", 60, "pixel");
 
 		playButton = new Button({
 			x: canvas.width / 2,
 			y: canvas.height / 2,
 			offset: {
-				x: 0,//metrics.width / 2,
-				y: 0
+				x: playMetrics.textWidth / 2,
+				y: playMetrics.textHeight / 2
 			},
 			
-			width: metrics.width,
-			height: metrics.height,
+			width: playMetrics.textWidth,
+			height: playMetrics.textHeight,
 
 			colour: "black",
-
-			text: "Play",
-			textOffset: metrics.offset, 
-			textSize: 60,	
-			font: "pixel",
-			textColour: "white"
 		});
-
-		playButton.addingText(context, "Play", "pixel", 60, metrics.offset, "white")
+		
+		canvas.addEventListener("mousedown", clicking, false);
+		canvas.addEventListener("mousemove", hovering, false);
+		
+		console.info("Menu successfully compiled");	
 	};
 	
 	canvas = document.querySelector("canvas");
 	context = canvas.getContext("2d");
-	
-	canvas.addEventListener("mousedown", clicking, false);
-	// canvas.addEventListener("mousemove", fetchingCursorPosition, false);
-
+		
 	renderingFont(declaring, pixelFont);
-
-	console.info("Menu successfully compiled");	
 	
 	animatingMenu();
-};
+}; 
