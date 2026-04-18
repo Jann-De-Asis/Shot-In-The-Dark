@@ -1,11 +1,11 @@
 // import { canvas } from "./../start/main.js";
 
-export { renderingAsset, renderingFont, drawingMap, 
+export { renderAsset, renderFont, drawMap, 
 	 playerSprites, /*villageSprite*/ pixelFont,
 	 fullscreenIcon };
 
 
-function renderingAsset(assets, callback) {	
+function renderAsset(assets, callback) {	
 	let numAssets = assets.length;
 	const loaded = function () {
 		console.info("Asset successfully rendered");
@@ -40,7 +40,7 @@ must be used to execute functions at the correct time.
 - Reference Link: (https://youtu.be/i2SPq-nb3NQ?si=2jBwJCTKqCNnzwGL&t=140)
 - Timestamp: 2:20 
 */
-function renderingFont(callback, font) {
+function renderFont(callback, font) {
 	font.load().then(
 		function(loadedFont) {
 			// Add the font to the document's font set
@@ -52,7 +52,7 @@ function renderingFont(callback, font) {
 };
 
 
-function drawingMap(image, layers) {
+function drawMap(image, layers) {
 	const tilesPerRow = 24;
 	const tileSize = 16;
 	const tileScale = 2;

@@ -3,23 +3,23 @@
 import ctx, { canvas, playButton, playMetrics, 
 	      fullscreenButton } from "./main.js";
 
-import { fetchingClickPosition, fetchingCursorPosition, 
-	 fetchingTextMeasurements } from "./../utilities.js";
+import { fetchClickPosition, fetchCursorPosition, toggleFullscreen } from "./../utilities.js";
 
 import { fullscreenIcon } from "./../assets/render.js";
 
-import compilingGame from "./../engine/initialise.js";
+import { compileGame } from "./../engine/initialise.js";
 
-export { animatingMenu as default, clicking, hovering };
+export { animateMenu, interactingWithMenu, interactingWithFullscreen };
 
-// Framerate 
+
 const fpsInterval = 1000 / 30;
 let then = Date.now();
 
-let animation;
+let menuAnimation; 
 
-function animatingMenu() {
-	animation = window.requestAnimationFrame(animatingMenu);
+
+function animateMenu() {
+	menuAnimation = window.requestAnimationFrame(animateMenu);
 
 	let now = Date.now();
 	let elapsed = now - then;
@@ -30,7 +30,7 @@ function animatingMenu() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	
-	playButton.drawingWithText(ctx, {
+	playButton.drawWithText(ctx, {
 		text: "Play", 
 		font: "pixel", 
 		size: 60, 
@@ -39,30 +39,41 @@ function animatingMenu() {
 			y: (playMetrics.fullHeight-playMetrics.textHeight) / 2
 		}, 
 		colour: "255, 255, 255"
+		
 	});	
-
-	fullscreenButton.drawing(ctx, 
+	
+	fullscreenButton.draw(ctx, 
 		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
-	);
+	);	
+
+	console.log(canvas.width);
+	console.log(canvas.height);
 };
 
 
-function clicking(event) {
-	if (playButton.checkingInside(fetchingClickPosition(event))) {
-		stop();
-		// compilingGame();		
+function interactingWithMenu(event) {
+	if (playButton.isInside(fetchClickPosition(event)) 
+		&& event.type === "mousedown") {
+		
+		terminateMenu();
+		// compileGame();		
 	};
-};
 
-
-function hovering(event) {
-	if (playButton.checkingInside(fetchingCursorPosition(event))) {
+	if (playButton.isInside(fetchCursorPosition(event))) {
 		playButton.backgroundOpacity = 1;
 	} else {
 		playButton.backgroundOpacity = 0;
 	};
-	
-	if (fullscreenButton.checkingInside(fetchingCursorPosition(event))) {
+};
+
+
+function interactingWithFullscreen(event) {	
+	if (fullscreenButton.isInside(fetchClickPosition(event)) 
+		&& event.type === "mousedown") {
+		toggleFullscreen();
+	};
+
+	if (fullscreenButton.isInside(fetchCursorPosition(event))) {
 		fullscreenButton.backgroundOpacity = 1;
 	} else {
 		fullscreenButton.backgroundOpacity = 0;
@@ -70,10 +81,9 @@ function hovering(event) {
 };
 
 
-function stop() {
-	canvas.removeEventListener("mousedown", clicking);
-	canvas.removeEventListener("mousemove", hovering);
+function terminateMenu() {
+	canvas.removeEventListener("mousedown", interactingWithMenu);
+	canvas.removeEventListener("mousemove", interactingWithMenu);
 
-	window.cancelAnimationFrame(animation);
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	window.cancelAnimationFrame(menuAnimation);
 };

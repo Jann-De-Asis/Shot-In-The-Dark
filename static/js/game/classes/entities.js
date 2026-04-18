@@ -29,7 +29,7 @@ class Entity {
 		this.animationDelay = 1.25;  // Delay By Decreasing Such By 1	
 	};
 
-	movement() {
+	move() {
 		if (this.moveUp) {
 			this.position.y -= this.velocity.y;
 		};
@@ -62,7 +62,7 @@ class Player extends Entity {
 		super.movement();
 	};
 	
-	animation(cursorAngle) {	
+	animate(cursorAngle) {	
 		// Entity's attributes must be updated every direction
 		// to account for the difference in the sprite sheet.	
 		if (cursorAngle < -45 && cursorAngle >= -135) {

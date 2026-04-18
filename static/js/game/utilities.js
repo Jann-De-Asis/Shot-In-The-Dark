@@ -7,13 +7,13 @@ NOTE: functions with events as parametres can only be used through eventlistener
 import ctx, { canvas } from "./start/main.js";
 
 export { 
-	fetchingClickPosition, fetchingPlayerToClickAngle, 
-	fetchingCursorPosition, fetchingPlayerToCursorAngle,
-	fetchingTextMeasurements
+	fetchClickPosition, fetchPlayerToClickAngle, 
+	fetchCursorPosition, fetchPlayerToCursorAngle,
+	fetchTextMetrics, toggleFullscreen, exitFullscreen
 };
 
 
-function fetchingClickPosition(event, log=false) {
+function fetchClickPosition(event, log=false) {
 	/*
 	Calculating The User's Click Position Relative To The Canvas.
 	- Reference Link: (https://www.geeksforgeeks.org/javascript/how-to-get-the-coordinates-of-a-mouse-click-on-a-canvas-element/)
@@ -33,7 +33,7 @@ function fetchingClickPosition(event, log=false) {
 };
 
 
-function fetchingPlayerToClickAngle(player, click) {
+function fetchPlayerToClickAngle(player, click) {
 	/* 
 	Finding the angle and velocity using inverse trigonometry and basic trigonometry.
 	- Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
@@ -47,7 +47,7 @@ function fetchingPlayerToClickAngle(player, click) {
 };
 
 
-function fetchingCursorPosition(event, log=false) {
+function fetchCursorPosition(event, log=false) {
 	const rect = canvas.getBoundingClientRect();
 	const cursorPosition = {
 		x: event.clientX - rect.left,
@@ -63,7 +63,7 @@ function fetchingCursorPosition(event, log=false) {
 };
 
 
-function fetchingPlayerToCursorAngle(cursor) {
+function fetchPlayerToCursorAngle(cursor) {
 	/*
 	'cursorPos' is set to 'undefined' until the mouse moves. Therefore,
 	the default case will be set to be facing down (i.e. 90 degrees) using 
@@ -78,25 +78,35 @@ function fetchingPlayerToCursorAngle(cursor) {
 };
 
 
-document.addEventListener("fullscreenchange", exitingFullscreen, false);
+let fullscreen = false;
 
 
-function scalingCanvas(width, height) {
-	canvas.width = width;
-	canvas.height = height;
-	
-	return canvas;
-};	
-
-
-function exitingFullscreen() {
+// Handles other cases of exiting fullscreen, such as the 'esc' button
+function exitFullscreen() {
 	if (document.fullscreenElement === null) {
-		return false;
+		document.exitFullscreen();
+		canvas.width = 600;
+		canvas.height = 400;
 	};
 };
 
 
-function fetchingTextMeasurements(text, size, font, log=false) {	
+function toggleFullscreen() {
+	fullscreen = !fullscreen
+
+	if (fullscreen) {
+		canvas.requestFullscreen();		
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+	} else {
+		document.exitFullscreen();
+		canvas.width = 600;
+		canvas.height = 400;
+	};	
+};
+
+
+function fetchTextMetrics(text, size, font, log=false) {	
 	/* 
 	Getting the exact measurements of the box around the text.
 	- Reference Link: (https://stackoverflow.com/questions/18900117/write-text-on-canvas-with-background)
@@ -119,13 +129,6 @@ function fetchingTextMeasurements(text, size, font, log=false) {
 };
 
 
-/*
-function togglingDarkness() {
-	isDarkMode = !isDarkMode // Toggle
-};
-*/
-
-
-function creatingRandomInt(min, max) {
+function createRandomInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
 };

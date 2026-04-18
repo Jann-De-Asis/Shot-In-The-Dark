@@ -15,7 +15,7 @@ class Button {
 		this.backgroundOpacity = 0;
 	};
 
-	drawing(ctx, sx, sy, sWidth, sHeight) {
+	draw(ctx, sx, sy, sWidth, sHeight) {
 		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
                 ctx.fillRect(this.x, this.y, this.width, this.height);		
 
@@ -24,7 +24,7 @@ class Button {
 			this.x, this.y, this.width, this.height)
 	};
 
-	drawingWithText(ctx, {text, font, size, offset, colour}) {
+	drawWithText(ctx, {text, font, size, offset, colour}) {
 		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
                 ctx.fillRect(this.x, this.y, this.width, this.height);		
 
@@ -35,24 +35,12 @@ class Button {
 		ctx.fillText(text, this.x - offset.x, this.y - offset.y);
 	};
 
-	checkingInside(position) {
+	isInside(position) {
 		return (
 			position.x >= this.x && position.x <= this.x+this.width 
 			&& position.y >= this.y && position.y <= this.y+this.height
 		);
 	};
-
-	/*
-	togglingFullscreen(canvas) {
-		if (document.fullscreenElement === null) {
-				canvas.requestFullscreen();		
-				return true;
-		} else {
-				document.exitFullscreen();
-				return false;
-		};	
-	};
-	*/
 };
 
 
@@ -68,7 +56,7 @@ class Bar {
 		this.backgroundColour = backgroundColour;
 	};
 
-	drawing(ctx) {
+	draw(ctx) {
 		ctx.fillStyle = this.backgroundColour;
 		ctx.fillRect(this.x, this.y, this.width, this.height);
 	};

@@ -1,26 +1,25 @@
 // The beginning point of the game's functionalities.
 import { Button } from "./../classes/interface.js";
 
-import { fetchingTextMeasurements } from "./../utilities.js";
+import { fetchTextMetrics, exitFullscreen } from "./../utilities.js";
 
-import animatingMenu, { clicking, hovering } from "./menu.js";
+import { animateMenu, interactingWithMenu, interactingWithFullscreen } from "./menu.js";
 
-import { renderingFont, renderingAsset, 
+import { renderFont, renderAsset, 
 	 fullscreenIcon, pixelFont } from "./../assets/render.js";  
 
-export { context as default, canvas, playButton, playMetrics,
-	 fullscreenButton };
+export { context as default, canvas, playButton, playMetrics, fullscreenButton };
 
 
-document.addEventListener("DOMContentLoaded", init, false);
+document.addEventListener("DOMContentLoaded", initalise, false);
 
 let context, canvas, fullscreenButton, playButton, playMetrics;
 
 
-function init() {			
+function initalise() {			
 	
-	function declaring() {	
-		playMetrics = fetchingTextMeasurements("Play", 60, "pixel");
+	function declareMenu() {	
+		playMetrics = fetchTextMetrics("Play", 60, "pixel");
 
 		playButton = new Button({
 			x: canvas.width / 2,
@@ -51,8 +50,13 @@ function init() {
 				backgroundColour: "128, 128, 128"
 		});
 		
-		canvas.addEventListener("mousedown", clicking, false);
-		canvas.addEventListener("mousemove", hovering, false);
+		document.addEventListener("fullscreenchange", exitFullscreen, false);
+		
+		canvas.addEventListener("mousemove", interactingWithMenu, false);
+		canvas.addEventListener("mousedown", interactingWithMenu, false);
+		
+		canvas.addEventListener("mousemove", interactingWithFullscreen, false);
+		canvas.addEventListener("mousedown", interactingWithFullscreen, false);
 		
 		console.info("Menu successfully compiled");	
 	};
@@ -60,7 +64,7 @@ function init() {
 	canvas = document.querySelector("canvas");
 	context = canvas.getContext("2d");
 	
-	renderingFont(declaring, pixelFont);
+	renderFont(declareMenu, pixelFont);
 
-	renderingAsset([{ "var": fullscreenIcon.image, "url": fullscreenIcon.url }], animatingMenu);	
+	renderAsset([{ "var": fullscreenIcon.image, "url": fullscreenIcon.url }], animateMenu);	
 }; 

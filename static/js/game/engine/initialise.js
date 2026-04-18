@@ -4,13 +4,13 @@ import { Bar, Button } from "./../classes/interface.js";
 
 /* import { animating } from "./runtime.js"; */
 
-import { renderingAsset, drawingMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
+import { renderAsset, drawMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
 // import layers from "./../assets/village_data.js";
 
-export { compilingGame as default };
+export { compileGame };
 
 
-function compilingGame() {
+function compileGame() {
 	// Made in the case where more unique sprites could be added to the character.
 	let sprites = [];
 	
@@ -20,9 +20,8 @@ function compilingGame() {
 	
 	// sprites.push({ "var": villageMap['image'], "url": villageMap['url']  })
 
-	renderingAsset(sprites)
-
 	/*
+	renderAsset(sprites)
 	
 	let player = new Player({
 			asset: playerSpritess,
