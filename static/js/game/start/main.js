@@ -8,12 +8,13 @@ import { animateMenu, interactingWithMenu, interactingWithFullscreen } from "./m
 import { renderFont, renderAsset, 
 	 fullscreenIcon, pixelFont } from "./../assets/render.js";  
 
-export { context as default, canvas, playButton, playMetrics, fullscreenButton };
+export { context as default, canvas, originalDimension, playButton, 
+	 playMetrics, fullscreenButton };
 
 
 document.addEventListener("DOMContentLoaded", initalise, false);
 
-let context, canvas, fullscreenButton, playButton, playMetrics;
+let context, canvas, originalDimension, fullscreenButton, playButton, playMetrics;
 
 
 function initalise() {			
@@ -63,6 +64,11 @@ function initalise() {
 	
 	canvas = document.querySelector("canvas");
 	context = canvas.getContext("2d");
+
+	originalDimension = {
+		width: canvas.width,
+		height: canvas.height
+	};
 	
 	renderFont(declareMenu, pixelFont);
 

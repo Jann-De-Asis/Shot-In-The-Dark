@@ -40,7 +40,7 @@ class Button {
 			position.x >= this.x && position.x <= this.x+this.width 
 			&& position.y >= this.y && position.y <= this.y+this.height
 		);
-	};
+	};	
 };
 
 

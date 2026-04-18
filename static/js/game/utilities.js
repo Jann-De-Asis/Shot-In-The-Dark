@@ -4,13 +4,17 @@ the program.
 
 NOTE: functions with events as parametres can only be used through eventlisteners.
 */
-import ctx, { canvas } from "./start/main.js";
+import ctx, { canvas, originalDimension } from "./start/main.js";
 
 export { 
 	fetchClickPosition, fetchPlayerToClickAngle, 
 	fetchCursorPosition, fetchPlayerToCursorAngle,
-	fetchTextMetrics, toggleFullscreen, exitFullscreen
+	fetchTextMetrics, toggleFullscreen, exitFullscreen,
+	scalingCanvas
 };
+
+
+// USER DATA
 
 
 function fetchClickPosition(event, log=false) {
@@ -78,34 +82,6 @@ function fetchPlayerToCursorAngle(cursor) {
 };
 
 
-let fullscreen = false;
-
-
-// Handles other cases of exiting fullscreen, such as the 'esc' button
-function exitFullscreen() {
-	if (document.fullscreenElement === null) {
-		document.exitFullscreen();
-		canvas.width = 600;
-		canvas.height = 400;
-	};
-};
-
-
-function toggleFullscreen() {
-	fullscreen = !fullscreen
-
-	if (fullscreen) {
-		canvas.requestFullscreen();		
-		canvas.width = window.innerWidth;
-		canvas.height = window.innerHeight;
-	} else {
-		document.exitFullscreen();
-		canvas.width = 600;
-		canvas.height = 400;
-	};	
-};
-
-
 function fetchTextMetrics(text, size, font, log=false) {	
 	/* 
 	Getting the exact measurements of the box around the text.
@@ -127,6 +103,45 @@ function fetchTextMetrics(text, size, font, log=false) {
 		textHeight: metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent
 	};
 };
+
+
+// USER INTERFACE
+
+let fullscreen = false;
+
+
+// Handles other cases of exiting fullscreen, such as the 'esc' button.
+function exitFullscreen() {
+	if (document.fullscreenElement === null) {
+		fullscreen = false;
+	};
+};
+
+
+function toggleFullscreen() {
+	fullscreen = !fullscreen;
+
+	if (fullscreen) {
+		canvas.requestFullscreen();		
+	} else {
+		document.exitFullscreen();
+	};	
+};
+
+
+function scalingCanvas() {
+	if (fullscreen) {
+		canvas.width = canvas.getBoundingClientRect().width, 
+		canvas.height = canvas.getBoundingClientRect().height
+	
+	} else {
+		canvas.width = originalDimension.width;
+		canvas.height = originalDimension.height;
+	};
+};
+
+
+// MATH
 
 
 function createRandomInt(min, max) {

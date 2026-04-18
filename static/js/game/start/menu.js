@@ -3,7 +3,8 @@
 import ctx, { canvas, playButton, playMetrics, 
 	      fullscreenButton } from "./main.js";
 
-import { fetchClickPosition, fetchCursorPosition, toggleFullscreen } from "./../utilities.js";
+import { fetchClickPosition, fetchCursorPosition, 
+	 toggleFullscreen, scalingCanvas } from "./../utilities.js";
 
 import { fullscreenIcon } from "./../assets/render.js";
 
@@ -29,7 +30,9 @@ function animateMenu() {
 	then = now - (elapsed % fpsInterval);
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	
+
+	scalingCanvas();
+
 	playButton.drawWithText(ctx, {
 		text: "Play", 
 		font: "pixel", 
@@ -46,8 +49,7 @@ function animateMenu() {
 		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
 	);	
 
-	console.log(canvas.width);
-	console.log(canvas.height);
+	console.log(canvas.getBoundingClientRect())
 };
 
 
