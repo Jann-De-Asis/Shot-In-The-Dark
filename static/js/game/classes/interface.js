@@ -1,7 +1,7 @@
 export { Button, Bar };
 
 class Button {
-	constructor({x, y, offset, width, height, colour}) {
+	constructor({x, y, offset, width, height, image, backgroundColour}) {
 		this.x = x - offset.x;
 		this.y = y - offset.y;
 		this.offset = offset;
@@ -9,25 +9,29 @@ class Button {
 		this.width = width;
 		this.height = height;
 		
-		this.colour = colour;		
+		this.image = image;
+		this.backgroundColour = backgroundColour;		
+		
+		this.backgroundOpacity = 0;
 	};
 
-	static fetchingTextMeasurements(ctx, text, size, font) {	
-	};
-
-	drawing(ctx) {
-		ctx.fillStyle = this.colour;
+	drawing(ctx, sx, sy, sWidth, sHeight) {
+		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
                 ctx.fillRect(this.x, this.y, this.width, this.height);		
+
+		ctx.drawImage(this.image, 
+			sx, sy, sWidth, sHeight,
+			this.x, this.y, this.width, this.height)
 	};
 
 	drawingWithText(ctx, {text, font, size, offset, colour}) {
-		ctx.fillStyle = this.colour;
+		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
                 ctx.fillRect(this.x, this.y, this.width, this.height);		
 
 		ctx.textBaseline = "top";
 		ctx.font = size + "px " + font;
 		
-		ctx.fillStyle = colour;
+		ctx.fillStyle = `rgba(${colour}, 1)`;
 		ctx.fillText(text, this.x - offset.x, this.y - offset.y);
 	};
 
@@ -38,6 +42,7 @@ class Button {
 		);
 	};
 
+	/*
 	togglingFullscreen(canvas) {
 		if (document.fullscreenElement === null) {
 				canvas.requestFullscreen();		
@@ -47,28 +52,24 @@ class Button {
 				return false;
 		};	
 	};
-
+	*/
 };
 
 
 class Bar {
-	constructor({x, y, width, height, colour}) {
-		this.x = x;
-		this.y = y;
+	constructor({x, y, offset, width, height, backgroundColour}) {
+		this.x = x - offset.x;
+		this.y = y - offset.y;
+		this.offset = offset;
+
 		this.width = width;
 		this.height = height;
-		this.colour = colour;
+		
+		this.backgroundColour = backgroundColour;
 	};
 
-	draw(ctx, changedCanvasWidth, changedCanvasHeight) {
-		this.y.canvasHeight = changedCanvasHeight;
-		
-		ctx.fillStyle = this.colour;
-		ctx.fillRect(
-			this.x.difference + this.x.canvasWidth, 
-			this.y.canvasHeight - this.y.difference, 
-			this.width, 
-			this.height
-		);
+	drawing(ctx) {
+		ctx.fillStyle = this.backgroundColour;
+		ctx.fillRect(this.x, this.y, this.width, this.height);
 	};
 };

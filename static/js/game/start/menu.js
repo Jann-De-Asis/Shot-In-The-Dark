@@ -1,9 +1,12 @@
 // (This the first screen ran when the website is open. 
 // This is where play, settings, how-to-play is kept.)
-import ctx, { canvas, playButton, playMetrics } from "./main.js";
+import ctx, { canvas, playButton, playMetrics, 
+	      fullscreenButton } from "./main.js";
 
 import { fetchingClickPosition, fetchingCursorPosition, 
 	 fetchingTextMeasurements } from "./../utilities.js";
+
+import { fullscreenIcon } from "./../assets/render.js";
 
 import compilingGame from "./../engine/initialise.js";
 
@@ -35,8 +38,12 @@ function animatingMenu() {
 			x: 0,
 			y: (playMetrics.fullHeight-playMetrics.textHeight) / 2
 		}, 
-		colour: "white"
+		colour: "255, 255, 255"
 	});	
+
+	fullscreenButton.drawing(ctx, 
+		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
+	);
 };
 
 
@@ -50,9 +57,15 @@ function clicking(event) {
 
 function hovering(event) {
 	if (playButton.checkingInside(fetchingCursorPosition(event))) {
-		playButton.colour = "gray";
+		playButton.backgroundOpacity = 1;
 	} else {
-		playButton.colour = "black";
+		playButton.backgroundOpacity = 0;
+	};
+	
+	if (fullscreenButton.checkingInside(fetchingCursorPosition(event))) {
+		fullscreenButton.backgroundOpacity = 1;
+	} else {
+		fullscreenButton.backgroundOpacity = 0;
 	};
 };
 

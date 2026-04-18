@@ -19,6 +19,8 @@ canvas {
 	margin: 0 auto;	
 
 	background-color: black;
+
+	image-rendering: pixelated;
 }
 
 header > h1 {

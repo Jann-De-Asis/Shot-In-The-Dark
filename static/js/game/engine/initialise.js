@@ -4,7 +4,7 @@ import { Bar, Button } from "./../classes/interface.js";
 
 /* import { animating } from "./runtime.js"; */
 
-import { renderingAssets, drawingMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
+import { renderingAsset, drawingMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
 // import layers from "./../assets/village_data.js";
 
 export { compilingGame as default };
@@ -20,7 +20,7 @@ function compilingGame() {
 	
 	// sprites.push({ "var": villageMap['image'], "url": villageMap['url']  })
 
-	renderingAssets(sprites)
+	renderingAsset(sprites)
 
 	/*
 	
@@ -54,19 +54,6 @@ function compilingGame() {
 			})
 	});
 
-	let fullscreenButton = new Button({
-					x: {
-						canvasWidth: canvas.width,
-						difference: 20
-					}, 
-					y: {
-						canvasHeight: 0,
-						difference: 10
-					},  
-					width: 10, 
-					height: 10, 
-					colour: "gray",
-	});
 
 	let ammunitionBar = new Bar({
 				x: {

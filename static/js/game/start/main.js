@@ -5,14 +5,16 @@ import { fetchingTextMeasurements } from "./../utilities.js";
 
 import animatingMenu, { clicking, hovering } from "./menu.js";
 
-import { renderingFont, pixelFont } from "./../assets/render.js";  
+import { renderingFont, renderingAsset, 
+	 fullscreenIcon, pixelFont } from "./../assets/render.js";  
 
-export { context as default, canvas, playButton, playMetrics };
+export { context as default, canvas, playButton, playMetrics,
+	 fullscreenButton };
 
 
 document.addEventListener("DOMContentLoaded", init, false);
 
-let context, canvas, playButton, playMetrics;
+let context, canvas, fullscreenButton, playButton, playMetrics;
 
 
 function init() {			
@@ -31,7 +33,22 @@ function init() {
 			width: playMetrics.textWidth,
 			height: playMetrics.textHeight,
 
-			colour: "black",
+			backgroundColour: "128, 128, 128",	
+		});
+		
+		fullscreenButton = new Button({
+				x: canvas.width,
+				y: 0,
+				offset: {
+					x: canvas.width / 16,
+					y: -canvas.height / 32
+				},
+
+				width: 25, 
+				height: 25,
+
+				image: fullscreenIcon.image,
+				backgroundColour: "128, 128, 128"
 		});
 		
 		canvas.addEventListener("mousedown", clicking, false);
@@ -42,8 +59,8 @@ function init() {
 	
 	canvas = document.querySelector("canvas");
 	context = canvas.getContext("2d");
-		
-	renderingFont(declaring, pixelFont);
 	
-	animatingMenu();
+	renderingFont(declaring, pixelFont);
+
+	renderingAsset([{ "var": fullscreenIcon.image, "url": fullscreenIcon.url }], animatingMenu);	
 }; 

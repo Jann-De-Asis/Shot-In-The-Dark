@@ -1,21 +1,22 @@
 // import { canvas } from "./../start/main.js";
 
-export { renderingAssets, renderingFont, drawingMap, 
-	playerSprites, /*villageSprite*/ pixelFont };
+export { renderingAsset, renderingFont, drawingMap, 
+	 playerSprites, /*villageSprite*/ pixelFont,
+	 fullscreenIcon };
 
 
-function renderingAssets(assets /*, callback*/) {	
+function renderingAsset(assets, callback) {	
 	let numAssets = assets.length;
 	const loaded = function () {
 		console.info("Asset successfully rendered");
 		numAssets = numAssets - 1;
 		if (numAssets === 0) {
-			// callback();
+			callback();
 		};
 	};
 
 	for (const asset of assets) {
-		const element = asset.container;
+		const element = asset.var;
 		if (element instanceof HTMLImageElement) {
 			element.addEventListener("load", loaded, false);
 		} else if (element instanceof HTMLAudioElement) {
@@ -44,7 +45,7 @@ function renderingFont(callback, font) {
 		function(loadedFont) {
 			// Add the font to the document's font set
   			document.fonts.add(loadedFont);
-  			console.info("Font successful rendered");
+			console.info("Font successfully rendered");
 			callback();
 		}
 	);
@@ -77,57 +78,65 @@ function drawingMap(image, layers) {
 	};
 };
 
+const fullscreenIcon = {
+	image: new Image(),
+	url: "static/assets/game/images/fullscreen_icon.png",
+	x: 0,
+	y: 0,
+	width: 488,
+	height: 488
+};
 
-const pixelFont = new FontFace("pixel", "url(/static/assets/game/images/arcade_pixel_font.ttf)");
+const pixelFont = new FontFace("pixel", "url(static/assets/game/images/arcade_pixel_font.ttf)");
 
 const playerSprites = {
 	// Entity's attributes must be updated every direction
 	// to account for the difference in the sprite sheet.	
 	idleUp: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/idle_up.png", 
+		url: "static/assets/game/images/player_sprites/idle_up.png", 
 		width: 13,
 		height: 16
 	},
 	idleLeft: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/idle_left.png", 
+		url: "static/assets/game/images/player_sprites/idle_left.png", 
 		width: 12,
 		height: 16
 	},
 	idleDown: { 	
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/idle_down.png", 
+		url: "static/assets/game/images/player_sprites/idle_down.png", 
 		width: 13,
 		height: 16
 	},
 	idleRight: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/idle_right.png", 
+		url: "static/assets/game/images/player_sprites/idle_right.png", 
 		width: 12,
 		height: 16
 	},
 	moveUp: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/move_up.png",
+		url: "static/assets/game/images/player_sprites/move_up.png",
 		width: 13,
 		height: 17
 	},
 	moveLeft: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/move_left.png", 
+		url: "static/assets/game/images/player_sprites/move_left.png", 
 		width: 14,
 		height: 17
 	},
 	moveDown: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/move_down.png", 
+		url: "static/assets/game/images/player_sprites/move_down.png", 
 		width: 13,
 		height: 17
 	},
 	moveRight: {
 		image: new Image(),
-		url: "/static/assets/game/images/player_sprites/move_right.png",
+		url: "static/assets/game/images/player_sprites/move_right.png",
 		width: 14,
 		height: 17
 	}
@@ -136,7 +145,7 @@ const playerSprites = {
 /*
 const villageSprite = {
 	image: new Image(),
-	url: "/static/assets/game/images/village_tileset.png", 
+	url: "static/assets/game/images/village_tileset.png", 
 	startingPosition: {
 		x: canvas.width / 2,
 		y: canvas.height / 2
