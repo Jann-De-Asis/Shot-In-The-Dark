@@ -4,6 +4,8 @@ the program.
 
 NOTE: functions with events as parametres can only be used through eventlisteners.
 */
+import { Button } from "./classes/interface.js";
+
 import ctx, { canvas, originalDimension } from "./start/main.js";
 
 export { 
@@ -110,9 +112,30 @@ function fetchTextMetrics(text, size, font, log=false) {
 let fullscreen = false;
 
 
+function scalingCanvas() {
+	if (fullscreen) {
+		canvas.width = canvas.getBoundingClientRect().width, 
+		canvas.height = canvas.getBoundingClientRect().height
+	
+		Button.scale = (canvas.width - originalDimension.width);
+		console.log("Scale: " + Button.scale);
+		console.log("Canvas change: " + canvas.width);
+	} else {
+		canvas.width = originalDimension.width;
+		canvas.height = originalDimension.height;
+		
+		Button.scale = 0;
+	};
+};
+
+
 // Handles other cases of exiting fullscreen, such as the 'esc' button.
 function exitFullscreen() {
 	if (document.fullscreenElement === null) {
+		canvas.width = originalDimension.width;
+		canvas.height = originalDimension.height;
+		
+		Button.scale = 1;
 		fullscreen = false;
 	};
 };
@@ -126,18 +149,6 @@ function toggleFullscreen() {
 	} else {
 		document.exitFullscreen();
 	};	
-};
-
-
-function scalingCanvas() {
-	if (fullscreen) {
-		canvas.width = canvas.getBoundingClientRect().width, 
-		canvas.height = canvas.getBoundingClientRect().height
-	
-	} else {
-		canvas.width = originalDimension.width;
-		canvas.height = originalDimension.height;
-	};
 };
 
 

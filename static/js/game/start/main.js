@@ -1,7 +1,7 @@
 // The beginning point of the game's functionalities.
 import { Button } from "./../classes/interface.js";
 
-import { fetchTextMetrics, exitFullscreen } from "./../utilities.js";
+import { fetchTextMetrics, exitFullscreen, scalingCanvas } from "./../utilities.js";
 
 import { animateMenu, interactingWithMenu, interactingWithFullscreen } from "./menu.js";
 
@@ -52,6 +52,7 @@ function initalise() {
 		});
 		
 		document.addEventListener("fullscreenchange", exitFullscreen, false);
+		window.addEventListener("resize", scalingCanvas, false);
 		
 		canvas.addEventListener("mousemove", interactingWithMenu, false);
 		canvas.addEventListener("mousedown", interactingWithMenu, false);

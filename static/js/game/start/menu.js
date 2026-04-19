@@ -1,5 +1,6 @@
 // (This the first screen ran when the website is open. 
 // This is where play, settings, how-to-play is kept.)
+
 import ctx, { canvas, playButton, playMetrics, 
 	      fullscreenButton } from "./main.js";
 
@@ -31,8 +32,6 @@ function animateMenu() {
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-	scalingCanvas();
-
 	playButton.drawWithText(ctx, {
 		text: "Play", 
 		font: "pixel", 
@@ -48,8 +47,6 @@ function animateMenu() {
 	fullscreenButton.draw(ctx, 
 		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
 	);	
-
-	console.log(canvas.getBoundingClientRect())
 };
 
 
@@ -57,7 +54,7 @@ function interactingWithMenu(event) {
 	if (playButton.isInside(fetchClickPosition(event)) 
 		&& event.type === "mousedown") {
 		
-		terminateMenu();
+		// terminateMenu();
 		// compileGame();		
 	};
 
