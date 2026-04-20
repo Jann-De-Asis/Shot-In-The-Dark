@@ -117,14 +117,14 @@ function scalingCanvas() {
 		canvas.width = canvas.getBoundingClientRect().width, 
 		canvas.height = canvas.getBoundingClientRect().height
 	
-		Button.scale = (canvas.width - originalDimension.width);
-		console.log("Scale: " + Button.scale);
-		console.log("Canvas change: " + canvas.width);
+		Button.ratio.x = canvas.width / originalDimension.width;
+		Button.ratio.y = canvas.height / originalDimension.height;
 	} else {
 		canvas.width = originalDimension.width;
 		canvas.height = originalDimension.height;
 		
-		Button.scale = 0;
+		Button.ratio.x = canvas.width / originalDimension.width;
+		Button.ratio.y = canvas.height / originalDimension.height;
 	};
 };
 
@@ -135,7 +135,8 @@ function exitFullscreen() {
 		canvas.width = originalDimension.width;
 		canvas.height = originalDimension.height;
 		
-		Button.scale = 1;
+		Button.ratio.x = originalDimension.positionRatio.x;
+		Button.ratio.y = originalDimension.positionRatio.y;
 		fullscreen = false;
 	};
 };

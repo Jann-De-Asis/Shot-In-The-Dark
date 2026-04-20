@@ -4,13 +4,16 @@ class Button {
 	// Applying static to allow changes to happen to every object.
 	// Reference Link: (https://youtu.be/UOH4SAG3BoQ?si=Xz2jGtWzflC_ta-T&t=233);
 	// - Timestamp: 3:53
-	static scale = 0;
-
+	static ratio = {
+		x: 1,
+		y: 1
+	};
+	
 	constructor({x, y, offset, width, height, image, backgroundColour}) {
-		this.x = x - offset.x;
-		this.y = y - offset.y;
+		this.x = x;
+		this.y = y;
 		this.offset = offset;
-
+		
 		this.width = width;
 		this.height = height;
 		
@@ -20,33 +23,47 @@ class Button {
 		this.backgroundOpacity = 0;
 	};
 
+
 	draw(ctx, sx, sy, sWidth, sHeight) {
+		let relativePosition = {
+			x: (this.x*Button.ratio.x) - this.offset.x,
+			y: (this.y*Button.ratio.y) - this.offset.y
+		};
+
 		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
-                ctx.fillRect(this.x + Button.scale, this.y, this.width, this.height);		
+                ctx.fillRect(relativePosition.x, relativePosition.y, this.width, this.height);		
 
 		ctx.drawImage(this.image, 
 			sx, sy, sWidth, sHeight,
-			this.x + Button.scale, this.y, this.width, this.height)
+			relativePosition.x, relativePosition.y, this.width, this.height)
 	};
 
-	drawWithText(ctx, {text, font, size, offset, colour}) {
-		console.log("PlayButton x: " + (this.x + Button.scale));
-		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
-                ctx.fillRect(this.x + Button.scale, this.y, this.width, this.height);		
 
-		console.log("Scale: " + Button.scale);
-		
+	drawWithText(ctx, {text, font, size, offset, colour}) {
+		let relativePosition = {
+			x: (this.x*Button.ratio.x) - this.offset.x,
+			y: (this.y*Button.ratio.y) - this.offset.y
+		};
+
+		ctx.fillStyle = `rgba(${this.backgroundColour}, ${this.backgroundOpacity})`;
+                ctx.fillRect(relativePosition.x, relativePosition.y, this.width, this.height);		
+
 		ctx.textBaseline = "top";
 		ctx.font = size + "px " + font;
 		
 		ctx.fillStyle = `rgba(${colour}, 1)`;
-		ctx.fillText(text, (this.x - offset.x) + Button.scale, this.y - offset.y);
+		ctx.fillText(text, (relativePosition.x - offset.x), (relativePosition.y - offset.y));
 	};
 
-	isInside(position) {
+	isInside(userPosition) {
+		let objectPosition = {
+			x: (this.x*Button.ratio.x) - this.offset.x,
+			y: (this.y*Button.ratio.y) - this.offset.y
+		};
+
 		return (
-			position.x >= this.x && position.x <= this.x+this.width 
-			&& position.y >= this.y && position.y <= this.y+this.height
+			userPosition.x >= objectPosition.x && userPosition.x <= objectPosition.x + this.width
+			&& userPosition.y >= objectPosition.y && userPosition.y <= objectPosition.y + this.height
 		);
 	};		
 };

@@ -68,7 +68,11 @@ function initalise() {
 
 	originalDimension = {
 		width: canvas.width,
-		height: canvas.height
+		height: canvas.height,
+		positionRatio: {
+			x: Button.ratio.x,
+			y: Button.ratio.y
+		}
 	};
 	
 	renderFont(declareMenu, pixelFont);
