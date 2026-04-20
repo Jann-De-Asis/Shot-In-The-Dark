@@ -2,42 +2,35 @@ import { Player } from  "./../classes/entities.js";
 import { Firearm } from  "./../classes/items.js";
 import { Bar, Button } from "./../classes/interface.js";
 
-/* import { animating } from "./runtime.js"; */
+import ctx, { canvas } from "./../start/main.js";
 
-import { renderAsset, drawMap, /*villageSprite,*/ playerSprites } from "./../assets/render.js";  
-// import layers from "./../assets/village_data.js";
+import { animateGame, activate, deactivate } from "./runtime.js"; 
+import { fetchCursorPosition } from "./../utilities.js";
 
-export { compileGame };
+import { renderAsset, drawMap, villageMap, playerSprites } from "./../assets/render.js";  
 
+export { compileGame, ammunitionBar, user };
+
+
+let user, ammunitionBar
 
 function compileGame() {
-	// Made in the case where more unique sprites could be added to the character.
-	let sprites = [];
 	
-	for (let sprite in playerSprites) {
-		sprites.push({"container": playerSprites[sprite]['image'], "url": playerSprites[sprite]['url']});
-	};
-	
-	/*sprites.push({ "var": villageMap['image'], "url": villageMap['url']  })*/
-
-	
-	renderAsset(sprites)
-	/*
-	let player = new Player({
-			asset: playerSpritess,
+	function declare() {
+		user = new Player({
+			asset: playerSprites,
 			sprite: {
 				frame: 0,
-				/mage: playerSpritess.idleRight.image
+				image: playerSprites.idleRight.image
 			},
+			scale: 3,
 
-			width: 13,
-			height: 16,
-		
+			width: playerSprites.idleRight.width,
+			height: playerSprites.idleRight.height,
+				
+			x: villageMap.startingPosition.x,	
+			y: villageMap.startingPosition.y,
 
-			position: {
-				x: villageMap.startingPosition.x,
-				y: villageMap.startingPosition.y
-			},	
 			velocity: {
 				x: 5,
 				y: 5
@@ -51,24 +44,41 @@ function compileGame() {
 				maxCapacity: 15,
 				capacity: 15
 			})
-	});
+		});
 
+		ammunitionBar = new Bar({
+			x: 0, 
+			y: canvas.height,  
+			offset: {
+				x: -canvas.width / 32,
+				y: canvas.height / 8
+			},
 
-	let ammunitionBar = new Bar({
-				x: {
-					canvasWidth: 0,
-					difference: 140
-				}, 
-				y: {
-					canvasHeight: canvas.height,
-					difference: 20
-				},  
-				width: 0,
-				height: 15,
-				colour: "yellow",
-
-	});
+			width: 0,
+			height: 30,
+			
+			colour: "yellow",
+		});
 		
-	drawingMap(villageMap, layers);
-	*/
+		window.addEventListener("keydown", activate, false);
+		window.addEventListener("keyup", deactivate, false);
+		
+		window.addEventListener("mousemove", activate, false);
+		window.addEventListener("mousedown", activate, false);
+		
+		animateGame();
+	};
+
+	// Made in the case where more unique sprites could be added to the character.
+	let sprites = [];
+	
+	for (let sprite in playerSprites) {
+		sprites.push({"var": playerSprites[sprite]['image'], "url": playerSprites[sprite]['url']});
+	};
+	
+	sprites.push({ "var": villageMap['image'], "url": villageMap['url']  });
+
+	renderAsset(sprites, declare);
+				
+	console.info("Game successfully compiled")
 };

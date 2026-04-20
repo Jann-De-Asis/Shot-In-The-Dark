@@ -39,17 +39,29 @@ function fetchClickPosition(event, log=false) {
 };
 
 
-function fetchPlayerToClickAngle(player, click) {
+function fetchPlayerToClickAngle(event, user, log=false) {
 	/* 
 	Finding the angle and velocity using inverse trigonometry and basic trigonometry.
 	- Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/atan2)
 	- Reference Link: (https://youtu.be/HXquxWtE5vA?si=n6eukRFpBSWR7r9_&t=8459)
 	- Timestamp: 2:20:59 
 	*/
-	return Math.atan2(
-		click.y - (player.y + ((player.height/2)*player.scale) - 5), 
-		click.x - (player.x + ((player.width/2)*player.scale) - 5) 
+	const rect = canvas.getBoundingClientRect();
+	const clickPosition = {
+		x: event.clientX - rect.left,
+		y: event.clientY - rect.top
+	};		
+
+	const angle = Math.atan2(
+		clickPosition.y - (user.y + (user.height/2)*user.scale), 
+		clickPosition.x - (user.x + (user.width/2)*user.scale) 
 	);
+
+	if (log !== false) {
+		console.log("Player-to-click: " + angle);
+	};
+
+	return angle;
 };
 
 
@@ -69,18 +81,24 @@ function fetchCursorPosition(event, log=false) {
 };
 
 
-function fetchPlayerToCursorAngle(cursor) {
-	/*
-	'cursorPos' is set to 'undefined' until the mouse moves. Therefore,
-	the default case will be set to be facing down (i.e. 90 degrees) using 
-	a ternary operator.
-	- Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator) 
-	*/
-	return cursor === undefined ? 90 : Math.atan2(
-			cursor.y - (player.y + (player.height/2)*player.scale), 
-			cursor.x - (player.x + (player.width/2)*player.scale) 
-			) * 180 / Math.PI;
-	// (Note: atan2() has been changed to degrees!)
+function fetchPlayerToCursorAngle(event, user, log=false) {
+	const rect = canvas.getBoundingClientRect();
+	const cursorPosition = {
+		x: event.clientX - rect.left,
+		y: event.clientY - rect.top
+	};		
+
+	// Note: atan2() has been changed to degrees!
+	const angle = Math.atan2(
+		cursorPosition.y - (user.y + (user.height/2)*user.scale), 
+		cursorPosition.x - (user.x + (user.width/2)*user.scale) 
+	) * 180 / Math.PI;
+
+	if (log !== false) {
+		console.log("Player-to-Cursor: " + angle);
+	};
+
+	return angle;
 };
 
 

@@ -1,7 +1,7 @@
-import { canvas } from "./../start/main.js";
+import ctx, { canvas } from "./../start/main.js";
 
 export { renderAsset, renderFont, drawMap, 
-	 playerSprites, /*villageMap*/ pixelFont,
+	 playerSprites, villageMap, pixelFont,
 	 fullscreenIcon };
 
 
@@ -52,11 +52,7 @@ function renderFont(callback, font) {
 };
 
 
-function drawMap(image, layers) {
-	const tilesPerRow = 24;
-	const tileSize = 16;
-	const tileScale = 2;
-
+function drawMap(image, layers, tilesPerRow, tileSize, tileScale) {
 	/*
 	Background values were created using an application called: "Tiled"
 	and reformated using self-made python script.
@@ -95,7 +91,7 @@ const playerSprites = {
 	idleUp: {
 		image: new Image(),
 		url: "static/assets/game/images/player_sprites/idle_up.png", 
-		width: 13,
+		width: 11,
 		height: 16
 	},
 	idleLeft: {
@@ -142,13 +138,11 @@ const playerSprites = {
 	}
 };
 
-/*
 const villageMap = {
 	image: new Image(),
 	url: "static/assets/game/images/village_tileset.png", 
 	startingPosition: {
-		x: canvas.width / 2,
-		y: canvas.height / 2
+		x: 300,
+		y: 150
 	}
 };
-*/

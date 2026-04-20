@@ -3,29 +3,35 @@ JavaScript's ES6 Modules for import and export was learned here:
 Reference Link: (https://youtu.be/fl-_6d18DN0?si=QIpKUDiK_ljpY70J&t=156)
 - Timestamp: 2:36 
 */
-import { Projectile } from "./classes/projectiles.js";
-import { canvas, ctx } from "./ignition.js";
+import ctx, { canvas, fullscreenButton } from "./../start/main.js";
 
-export { animatingGame };
+import { interactingWithFullscreen } from "./../start/menu.js" ;
+
+import { fullscreenIcon, villageMap, drawMap } from "./../assets/render.js";
+import { layers } from "./../assets/village_data.js";
+
+import { fetchPlayerToCursorAngle, fetchPlayerToClickAngle } from "./../utilities.js";
+
+import { Projectile } from "./../classes/projectiles.js";
+
+
+import { ammunitionBar, user } from "./initialise.js";
+
+export { animateGame, activate, deactivate };
+
 // Change the lists into dictionaries and have the objects in that list. 
 // Pre-define that list since nothing new is ever going to change.
-let buttons = [];
-let entities = [];
-
-let projectiles = {
-	userProjectiles: [],
-	enemyProjectiles: []
-};
-
-let scale = false;
+let projectiles = [];
 
 // Framerate 
 const fpsInterval = 1000 / 30;
 let then = Date.now();
 
+let gameAnimation, playerToCursorAngle;
 
-function animatingGame() {
-	window.requestAnimationFrame(animatingGame);
+
+function animateGame() {
+	gameAnimation = window.requestAnimationFrame(animateGame);
 
 	// Manages the frames per second (fps) 
 	// through the denominator of 'fpsInterval'.
@@ -40,108 +46,103 @@ function animatingGame() {
 	// Clearing the canvas every frame to give
 	// the illusion of animation.
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	
-	// Constantly updating the scale to account for changes
-	// in size for fullscreen mode.	
-	if (scale) {
-		scalingCanvas(canvas, window.innerWidth, window.innerHeight);
-	} else {
-		scalingCanvas(canvas, 600, 400);
-	};
-
 	ctx.imageSmoothingEnabled = false;
 	
-	animatingSprite(user);
-
-	user.movement();
-	user.animation(cursorAngle(cursorPos, user));
+	drawMap(villageMap.image, layers, 85, 16, 2);
 	
+	ammunitionBar.drawWithText(ctx, {
+		text: "Ammo " + user.ammunition,
+		font: "pixel",
+		size: "30",
+		offset: {
+			x: 0,
+			y: 30
+		},
+		colour: "white"
+	});
 
-	buttons.push(fullscreenButton);
+	fullscreenButton.draw(ctx, 
+		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
+	);	
 
-	bars.push(ammunitionBar);
+	user.move();
+	user.drawSprite(ctx);
+	/*
+	'playerToCursorAngle' is set to 'undefined' until the mouse moves. Therefore,
+	the default case will be set to be facing down (i.e. 90 degrees) using 
+	a ternary operator, or else the sprite will break.
+	- Reference Link: (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_operator) 
+	*/
+	user.changeSprite(playerToCursorAngle === undefined ? 90 : playerToCursorAngle);
 
+	
 	// Looping backwards to account for projectiles being 
 	// removed and avoiding an 'out-of-range' error. 
-	for (let projectileType in projectiles) {
-		for (let i = (projectiles[projectileType].length - 1); i >= 0; i--) {
-			projectiles[projectileType][i].project(ctx);
-		};
+	for (let i = (projectiles.length - 1); i >= 0; i--) {
+		projectiles[i].project(ctx);
 	};
-	
-	for (let button of buttons) {
-		button.draw(ctx, canvas.width, canvas.height)
-	};
-	
+		
 	if (user.equip === null) {
 		ammunitionBar.width = 0;
 	} else {
-		// Multiplies the bar to make it more visible.
 		ammunitionBar.width = user.equip.capacity * 8;
 	};
+};
 
-	for (let bar of bars) {
-		bar.draw(ctx, canvas.width, canvas.height);
-	};
 
-	// Text
-	ctx.font = "30px  Andale Mono";
-	ctx.fillStyle = "black";
-	ctx.fillText("Ammo: " + user.ammunition, 10, canvas.height - 10)
+
+function activate(event) {
+	if (event.type === "keydown") {
+		let key = event.key.toLowerCase();
+	
+		if (key === "shift") {	
+			user.velocity.x = user.velocity.x * user.sprintIncrease;
+			user.velocity.y = user.velocity.y * user.sprintIncrease;
+		};
+
+		if (key === "w") {	
+			user.moveUp = true;
+
+		} else if (key === "a") {
+			user.moveLeft = true;
 		
-};
+		} else if (key === "s") {
+			user.moveDown = true;
 
-// IMAGES
-
-function animatingSprite(entity) {
-	ctx.drawImage(entity.sprite.image,
-		entity.sprite.frame * entity.width, entity.height, entity.height, entity.width,
-		entity.position.x, entity.position.y, entity.width * entity.asset.scale, entity.height * entity.asset.scale);	
-	/*
-	Displays and delays the sprite animation cycle.
-	Reference Link: (https://stackoverflow.com/questions/69059989/how-do-i-slowdown-my-sprite-animation-in-javascript-canvas)
-	- Found in the verified solution.  
-	*/
-	if (entity.animationDelay > 0) {
-		entity.animationDelay--;
-	} else {
-		entity.forwardCycle ? 
-		(entity.frame = (entity.frame+1) % 6) : (entity.frame = ((entity.frame+6)-1) % 6);
-		entity.animationDelay = 1.25;
-	};
-};
-
-// EVENTS
-
-window.addEventListener("keydown", activatingKey, false);
-
-function activatingKey(event) {
-	let key = event.key//.toLowerCase;
-
-	if (key === "shift") {	
-		user.velocity.x = user.velocity.x * user.sprintIncrease;
-		user.velocity.y = user.velocity.y * user.sprintIncrease;
+		} else if (key === "d") {
+			user.moveRight = true;		
+		};
 	};
 
-	if (key === "w") {	
-		user.moveUp = true;
-
-	} else if (key === "a") {
-		user.moveLeft = true;
+	if (event.type === "mousemove") {
+		playerToCursorAngle = fetchPlayerToCursorAngle(event, user);
+	};
 	
-	} else if (key === "s") {
-		user.moveDown = true;
+	// Left-mouse button
+	if (event.type === "mousedown") {
+		if (user.equip.capacity !== 0) {
+			projectiles.push(
+				new Projectile({
+					x: user.x + ((user.width/2)*user.scale), 
+					y: user.y + ((user.height/2)*user.scale), 
+					width: 10,
+					height: 10,
+					colour: "yellow",
+					velocity: {
+						x: Math.cos(fetchPlayerToClickAngle(event, user)) * 50,
+						y: Math.sin(fetchPlayerToClickAngle(event, user)) * 50
+					}
+				})
+			);
 
-	} else if (key === "d") {
-		user.moveRight = true;
-	
+			user.equip.capacity -= 1;
+		};
 	};
 };
 
-window.addEventListener("keyup", deactivatingKey, false);
 
-function deactivatingKey(event) {
-	let key = event.key//.toLowerCase();	
+function deactivate(event) {
+	let key = event.key.toLowerCase();	
 	
 	if (key === "shift") {
 		user.velocity.x = user.velocity.x / user.sprintIncrease;
@@ -167,43 +168,5 @@ function deactivatingKey(event) {
 			user.equip.capacity = user.equip.maxCapacity;
 		};
 	};
-};
 
-
-const velocity = {
-	x: Math.cos(angle) * 50,
-	y: Math.sin(angle) * 50
-};
-
-
-if (fullscreenButton.isInside(clickPos, fullscreenButton)) {
-	// The 'toggleFullscreen' method returns 
-	// either true or false for scale.
-	scale = fullscreenButton.toggleFullscreen(canvas);
-};
-
-for (let button of buttons) {
-	if (button.isInside(cursorPos, button)) {
-		button.colour = "brown";
-	} else {
-		button.colour = "gray";
-	};
-};
-
-// Left-mouse button
-if (event.button === 0) {
-			
-if (user.equip.capacity !== 0) {
-	projectiles.userProjectiles.push(
-				new Projectile({
-					x: (user.position.x + ((user.width/2)*user.sprite.scale) - 5), 
-					y: (user.position.y + ((user.height/2)*user.sprite.scale) - 5), 
-					width: 10,
-					height: 10,
-					colour: "yellow",
-					velocity
-				})
-	);
-
-	user.equip.capacity -= 1;
 };
