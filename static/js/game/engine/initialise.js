@@ -18,11 +18,11 @@ function compileGame() {
 		sprites.push({"container": playerSprites[sprite]['image'], "url": playerSprites[sprite]['url']});
 	};
 	
-	// sprites.push({ "var": villageMap['image'], "url": villageMap['url']  })
+	/*sprites.push({ "var": villageMap['image'], "url": villageMap['url']  })*/
 
-	/*
-	renderAsset(sprites)
 	
+	renderAsset(sprites)
+	/*
 	let player = new Player({
 			asset: playerSpritess,
 			sprite: {

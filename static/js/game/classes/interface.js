@@ -62,8 +62,11 @@ class Button {
 		};
 
 		return (
-			userPosition.x >= objectPosition.x && userPosition.x <= objectPosition.x + this.width
-			&& userPosition.y >= objectPosition.y && userPosition.y <= objectPosition.y + this.height
+			userPosition.x >= objectPosition.x 
+			&& userPosition.x <= (objectPosition.x + this.width)
+			
+			&& userPosition.y >= objectPosition.y 
+			&& userPosition.y <= (objectPosition.y + this.height)
 		);
 	};		
 };

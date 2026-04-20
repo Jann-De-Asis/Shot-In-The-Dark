@@ -75,6 +75,7 @@ function initalise() {
 		}
 	};
 	
+	// Callback after font is rendered.
 	renderFont(declareMenu, pixelFont);
 
 	renderAsset([{ "var": fullscreenIcon.image, "url": fullscreenIcon.url }], animateMenu);	

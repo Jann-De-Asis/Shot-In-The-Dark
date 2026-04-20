@@ -1,4 +1,4 @@
-/* Declaring a custom font for use in the page 
+/* Declaring a custom font for use in the page.
  * - Reference Link: (https://www.w3tutorials.net/blog/how-can-i-use-custom-fonts-in-an-html5-canvas-element/#core-concepts-font-loading-and-canvas-text-apis) 
  * - Found in 'Core Concepts: Font Loading and Canvas Text APIs'
  */
@@ -18,7 +18,7 @@ canvas {
 	
 	margin: 0 auto;	
 
-	background-color: green;
+	background-color: black;
 
 	image-rendering: pixelated;
 }

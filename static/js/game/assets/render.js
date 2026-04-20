@@ -1,7 +1,7 @@
-// import { canvas } from "./../start/main.js";
+import { canvas } from "./../start/main.js";
 
 export { renderAsset, renderFont, drawMap, 
-	 playerSprites, /*villageSprite*/ pixelFont,
+	 playerSprites, /*villageMap*/ pixelFont,
 	 fullscreenIcon };
 
 
@@ -143,7 +143,7 @@ const playerSprites = {
 };
 
 /*
-const villageSprite = {
+const villageMap = {
 	image: new Image(),
 	url: "static/assets/game/images/village_tileset.png", 
 	startingPosition: {

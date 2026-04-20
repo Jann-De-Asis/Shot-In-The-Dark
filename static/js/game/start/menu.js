@@ -47,8 +47,6 @@ function animateMenu() {
 	fullscreenButton.draw(ctx, 
 		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
 	);	
-
-	console.log(canvas.width / 16);
 };
 
 
@@ -56,11 +54,11 @@ function interactingWithMenu(event) {
 	if (playButton.isInside(fetchClickPosition(event)) 
 		&& event.type === "mousedown") {
 		
-		// terminateMenu();
-		// compileGame();		
+		terminateMenu();
+		compileGame();		
 	};
 
-	if (playButton.isInside(fetchCursorPosition(event, true))) {
+	if (playButton.isInside(fetchCursorPosition(event))) {
 		playButton.backgroundOpacity = 1;
 	} else {
 		playButton.backgroundOpacity = 0;
