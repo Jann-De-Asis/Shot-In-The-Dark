@@ -32,7 +32,7 @@ let gameAnimation, playerToCursorAngle;
 
 function animateGame() {
 	gameAnimation = window.requestAnimationFrame(animateGame);
-
+	
 	// Manages the frames per second (fps) 
 	// through the denominator of 'fpsInterval'.
 	// (Make this into a function when it's working.)
@@ -48,7 +48,11 @@ function animateGame() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	ctx.imageSmoothingEnabled = false;
 	
-	drawMap(villageMap.image, layers, 85, 16, 2);
+	// Temporary camera solution for visibility of the map.
+	ctx.save();
+	ctx.translate(canvas.width / 2 - user.x, canvas.height / 2 - user.y);
+	drawMap(villageMap.image, layers, 24, 16, 2);
+	ctx.restore();
 	
 	ammunitionBar.drawWithText(ctx, {
 		text: "Ammo " + user.ammunition,
@@ -65,8 +69,9 @@ function animateGame() {
 		fullscreenIcon.x, fullscreenIcon.y, fullscreenIcon.width, fullscreenIcon.height
 	);	
 
-	user.move();
+
 	user.drawSprite(ctx);
+	user.move();
 	/*
 	'playerToCursorAngle' is set to 'undefined' until the mouse moves. Therefore,
 	the default case will be set to be facing down (i.e. 90 degrees) using 
@@ -87,6 +92,7 @@ function animateGame() {
 	} else {
 		ammunitionBar.width = user.equip.capacity * 8;
 	};
+
 };
 
 

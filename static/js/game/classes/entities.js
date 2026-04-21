@@ -5,6 +5,8 @@ Reference Link: (https://youtu.be/DqUPa0D2N78?si=O1NNsm7qBeUs11QS&t=84)
 Refernece Link: (https://youtu.be/Cto38GpvJgg?si=9wa5930EtFF268E5&t=191)i
 - Timestamp: 3:11
 */
+import { canvas } from "./../start/main.js";
+
 export { Player, /* Enemy */ };
 
 

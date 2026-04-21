@@ -60,6 +60,7 @@ function compileGame() {
 			colour: "yellow",
 		});
 		
+
 		window.addEventListener("keydown", activate, false);
 		window.addEventListener("keyup", deactivate, false);
 		
@@ -68,6 +69,7 @@ function compileGame() {
 		
 		animateGame();
 	};
+
 
 	// Made in the case where more unique sprites could be added to the character.
 	let sprites = [];
